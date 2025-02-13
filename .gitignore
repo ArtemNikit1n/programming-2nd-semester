@@ -414,6 +414,9 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+# Rider
+.idea/
+
 # Editor-based Rest Client
 .idea/httpRequests
 
