@@ -1,78 +1,67 @@
-﻿using System;
-
-namespace Sorting
+﻿var str = System.Console.ReadLine();
+if (str is null)
 {
-    internal static class BubbleSort
+    Console.WriteLine("\nВсё плохо:(");
+    return -1;
+}
+
+var массив = str.Split(' ');
+
+// ToArray() склавдывает всё что вернул Select в массив.
+var array = массив.Select(x => int.Parse(x)).ToArray();
+
+// for (var i = 0; i < array.Length; ++i)
+// {
+//     if (int.TryParse(массив[i], out int result))
+//     {
+//         array[i] = result;
+//     }
+// }
+
+System.Console.WriteLine("\nИсходный массив: ");
+
+array.ToList().ForEach(x => Console.Write(x + " "));
+
+BubbleSort(array);
+
+System.Console.WriteLine("\nОтсортированный массив: ");
+foreach (var item in array)
+{
+    System.Console.Write($"{item} ");
+}
+
+void BubbleSort(int[] array)
+{
+    bool isArraySorted = false;
+    while (!isArraySorted)
     {
-        private static void Main(string[] args)
+        isArraySorted = true;
+        for (int i = 0; i < array.Length - 1; i++)
         {
-            if (!Tests.RunTests())
+            if (array[i] > array[i + 1])
             {
-                Console.WriteLine("Test FAILED");
-                return;
+                (array[i], array[i + 1]) = (array[i + 1], array[i]);
+                isArraySorted = false;
             }
-            Console.WriteLine("Test PASSED");
-        }
-
-        public static void BubbleSortArray(int[] array)
-        {
-            var isArraySorted = true;
-            for (var i = 0; i < array.Length - 1; ++i)
-            {
-                for (var j = 0; j < array.Length - i - 1; ++j)
-                {
-                    if (array[j] <= array[j + 1])
-                    {
-                        continue;
-                    }
-                    Swap(array, j, j + 1);
-                    isArraySorted = false;
-                }
-                if (isArraySorted) 
-                {
-                    break;
-                }
-            }
-        }
-
-        private static void Swap(int[] array, int i, int j)
-        {
-            (array[i], array[j]) = (array[j], array[i]);
-        }
-    }
-
-    internal static class Tests
-    {
-        private static bool IsArraySorted(int[] array)
-        {
-            for (var i = 0; i < array.Length - 1; ++i)
-            {
-                if (array[i] > array[i + 1])
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public static bool RunTests()
-        {
-            int[] regularArray = [5, 3, -8, 4, 2];
-            BubbleSort.BubbleSortArray(regularArray);
-            if (!IsArraySorted(regularArray))
-            {
-                return false;
-            }
-            int[] sortedArray = [-1, 2, 3, 4, 5];
-            BubbleSort.BubbleSortArray(regularArray);
-            if (!IsArraySorted(regularArray))
-            {
-                return false;
-            }
-            
-            int[] nullArray = [0];
-            BubbleSort.BubbleSortArray(regularArray);
-            return IsArraySorted(regularArray);
         }
     }
 }
+
+var (mean, dispersion) = Math(array);
+System.Console.WriteLine($"\nМат ожидание: {mean}\nДисперсия: {dispersion}");
+
+(double Mean, double Dispersion) Math(int[] array)
+{
+    var mean = CalcMean(array);
+    var dispersion = 1.0;
+    foreach (var t in array)
+    {
+        dispersion += System.Math.Pow(t - mean, 2.0);
+    }
+    dispersion /= array.Length - 1;
+    return (mean, dispersion);
+    
+    double CalcMean(int[] array) => array.Sum() / (float)array.Length;
+}
+
+return 0;
