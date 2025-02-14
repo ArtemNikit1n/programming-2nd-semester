@@ -6,24 +6,20 @@ namespace Sorting
     {
         private static void Main(string[] args)
         {
-            int[] array = [5, 3, 8, 4, 2];
-
-            Console.WriteLine("Исходный массив:");
-            PrintArray(array);
-
-            BubbleSortArray(array);
-
-            Console.WriteLine("\nОтсортированный массив:");
-            PrintArray(array);
+            if (!Tests.RunTests())
+            {
+                Console.WriteLine("Test FAILED");
+                return;
+            }
+            Console.WriteLine("Test PASSED");
         }
 
-        private static void BubbleSortArray(int[] array)
+        public static void BubbleSortArray(int[] array)
         {
-            var arrayLength = array.Length;
             var isArraySorted = true;
-            for (var i = 0; i < arrayLength - 1; ++i)
+            for (var i = 0; i < array.Length - 1; ++i)
             {
-                for (var j = 0; j < arrayLength - i - 1; ++j)
+                for (var j = 0; j < array.Length - i - 1; ++j)
                 {
                     if (array[j] <= array[j + 1])
                     {
@@ -32,8 +28,7 @@ namespace Sorting
                     Swap(array, j, j + 1);
                     isArraySorted = false;
                 }
-
-                if (isArraySorted)
+                if (isArraySorted) 
                 {
                     break;
                 }
@@ -44,14 +39,40 @@ namespace Sorting
         {
             (array[i], array[j]) = (array[j], array[i]);
         }
+    }
 
-        private static void PrintArray(int[] array)
+    internal static class Tests
+    {
+        private static bool IsArraySorted(int[] array)
         {
-            foreach (var item in array)
+            for (var i = 0; i < array.Length - 1; ++i)
             {
-                Console.Write(item + " ");
+                if (array[i] > array[i + 1])
+                {
+                    return false;
+                }
             }
-            Console.WriteLine();
+            return true;
+        }
+
+        public static bool RunTests()
+        {
+            int[] regularArray = [5, 3, -8, 4, 2];
+            BubbleSort.BubbleSortArray(regularArray);
+            if (!IsArraySorted(regularArray))
+            {
+                return false;
+            }
+            int[] sortedArray = [-1, 2, 3, 4, 5];
+            BubbleSort.BubbleSortArray(regularArray);
+            if (!IsArraySorted(regularArray))
+            {
+                return false;
+            }
+            
+            int[] nullArray = [0];
+            BubbleSort.BubbleSortArray(regularArray);
+            return IsArraySorted(regularArray);
         }
     }
 }
