@@ -67,8 +67,22 @@ namespace BWT
             return (lastColumn.Permutation, lastColumn.EndPosition);
         }
 
+        private static Dictionary<char, int> CountNumberOfEachSymbol(string input)
+        {
+            var frequencies = new Dictionary<char, int>();
+            foreach (var symbol in input)
+            {
+                if (!frequencies.TryAdd(symbol, 1))
+                {
+                    ++frequencies[symbol];
+                }
+            }
+            return frequencies;
+        }
+
         public static string InverseTransform(string transformedString, int endPosition)
         {
+            var frequencies = CountNumberOfEachSymbol(transformedString);
             return transformedString[endPosition..];
         }
     }
