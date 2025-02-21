@@ -67,22 +67,48 @@ namespace BWT
             return (lastColumn.Permutation, lastColumn.EndPosition);
         }
 
-        private static Dictionary<char, int> CountNumberOfEachSymbol(string input)
+        private static (Dictionary<char, int>, int[]) CountNumberOfEachSymbolAndItsRank(string input)
         {
+            var rank = new int[input.Length];
             var frequencies = new Dictionary<char, int>();
-            foreach (var symbol in input)
+            for (var i = 0; i < input.Length; i++)
             {
+                var symbol = input[i];
+
                 if (!frequencies.TryAdd(symbol, 1))
                 {
-                    ++frequencies[symbol];
+                    rank[i] = frequencies[symbol];
+                    frequencies[symbol]++;
+                }
+                else
+                {
+                    rank[i] = 0;
                 }
             }
-            return frequencies;
+            return (frequencies, rank);
+        }
+
+        private static Dictionary<char, int> GetDictionaryOfFirstOccurrences(Dictionary<char, int> frequencies)
+        {
+            var sortedSymbols = new List<char>(frequencies.Keys);
+            sortedSymbols.Sort();
+            
+            var firstOccurrence = new Dictionary<char, int>();
+            var cumulativeCount = 0;
+            
+            foreach (char symbol in sortedSymbols)
+            {
+                firstOccurrence[symbol] = cumulativeCount;
+                cumulativeCount += frequencies[symbol];
+            }
+            
+            return firstOccurrence;
         }
 
         public static string InverseTransform(string transformedString, int endPosition)
         {
-            var frequencies = CountNumberOfEachSymbol(transformedString);
+            var (frequencies, rank) = CountNumberOfEachSymbolAndItsRank(transformedString);
+            var firstOccurrence = GetDictionaryOfFirstOccurrences(frequencies);
             return transformedString[endPosition..];
         }
     }
