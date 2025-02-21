@@ -1,5 +1,8 @@
 namespace StackCalculator;
 
+/// <summary>
+/// Stack of elements.
+/// </summary>
 public interface IStack
 {
     /// <summary>
@@ -15,7 +18,7 @@ public interface IStack
     public (double Value, bool IsError) Pop();
 
     /// <summary>
-    /// Проверка на наличие элементов.
+    /// Gets a value indicating whether stack is not empty.
     /// </summary>
     /// <returns>true = стек пуст.</returns>
     public bool IsEmpty();

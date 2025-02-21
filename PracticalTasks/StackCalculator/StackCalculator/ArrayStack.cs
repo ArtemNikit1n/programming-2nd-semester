@@ -15,12 +15,13 @@ public class ArrayStack : IStack
     /// <inheritdoc/>
     public void Push(double value)
     {
-        if (this.head == this.array.Length)
+        ++this.head;
+        if (this.head >= this.array.Length)
         {
             Array.Resize(ref this.array, this.array.Length * 2);
         }
 
-        this.array[++this.head] = value;
+        this.array[this.head] = value;
     }
 
     /// <inheritdoc/>
