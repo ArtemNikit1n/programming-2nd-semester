@@ -4,11 +4,11 @@
 
 using BurrowsWheelerTransformer;
 
-const string input = "ba$$nana$";
+if (!BWTTests.RunTests())
+{
+    Console.WriteLine("Tests FAILED.");
+    return 1;
+}
 
-var (transformedString, endPosition) = BWT.Transform(input);
-Console.WriteLine($"Transformed string: {transformedString}");
-Console.WriteLine($"End position: {endPosition}");
-
-var result = BWT.InverseTransform(transformedString, endPosition);
-Console.WriteLine($"The original string: {result}");
+Console.WriteLine("Tests PASSED.");
+return 0;

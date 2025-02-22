@@ -18,6 +18,11 @@ namespace BurrowsWheelerTransformer
         /// <returns>The first parameter returns the converted string, and the second parameter returns the index of the last character in that string.</returns>
         public static (string TransformedString, int EndPosition) Transform(string input)
         {
+            if (input == string.Empty)
+            {
+                return (string.Empty, -1);
+            }
+
             var rotations = GenerateRotations(input);
             Array.Sort(rotations);
             var lastColumn = GetLastColumn(rotations);
@@ -32,6 +37,11 @@ namespace BurrowsWheelerTransformer
         /// <returns>The original line.</returns>
         public static string InverseTransform(string transformedString, int endPosition)
         {
+            if (transformedString == string.Empty)
+            {
+                return string.Empty;
+            }
+
             var (frequencies, rank) = CountNumberOfEachSymbolAndItsRank(transformedString);
             var firstOccurrence = GetDictionaryOfFirstOccurrences(frequencies);
 
