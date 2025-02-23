@@ -76,9 +76,36 @@ public class Trie
         return currentNode.IsEndOfWord;
     }
 
+    /// <summary>
+    /// Removes an element from the trie.
+    /// </summary>
+    /// <param name="element">The element to delete.</param>
+    /// <returns>Returns true if the element was actually in the village.</returns>
     public bool Remove(string element)
     {
-        return false;
+        if (string.IsNullOrEmpty(element))
+        {
+            return false;
+        }
+
+        var currentNode = this.root;
+        foreach (var symbol in element)
+        {
+            if (!currentNode.Children.TryGetValue(symbol, out var nextNode))
+            {
+                return false;
+            }
+
+            currentNode = nextNode;
+        }
+
+        if (!currentNode.IsEndOfWord)
+        {
+            return false;
+        }
+
+        currentNode.IsEndOfWord = false;
+        return true;
     }
 
     public int HowManyStartsWithPrefix(string prefix)

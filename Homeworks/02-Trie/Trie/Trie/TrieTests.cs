@@ -18,10 +18,53 @@ public static class TrieTests
     /// </returns>
     public static bool RunTests()
     {
-        return TestAddAndContains();
+        return TestAddAndContains() && TestRemove();
     }
 
     private static bool TestAddAndContains()
+    {
+        Trie trie = new();
+
+        var emptyString = string.Empty;
+        const string normalString = "apple";
+        const string prefixNormalString = "app";
+        const string longString = "applesAndBananas";
+        const string withoutCommonPrefix = "bananas";
+
+        var hasStringBeenAdded = trie.Add(emptyString);
+        if (hasStringBeenAdded && trie.Size != 0)
+        {
+            return false;
+        }
+
+        hasStringBeenAdded = trie.Add(normalString);
+        if (!hasStringBeenAdded && trie.Size != 1)
+        {
+            return false;
+        }
+
+        hasStringBeenAdded = trie.Add(normalString);
+        if (hasStringBeenAdded && trie.Size != 1)
+        {
+            return false;
+        }
+
+        trie.Add(prefixNormalString);
+        trie.Add(longString);
+        hasStringBeenAdded = trie.Add(withoutCommonPrefix);
+        if (hasStringBeenAdded && trie.Size != 4)
+        {
+            return false;
+        }
+
+        return trie.Contains(withoutCommonPrefix) &&
+               trie.Contains(normalString) &&
+               trie.Contains(prefixNormalString) &&
+               trie.Contains(longString) &&
+               !trie.Contains(emptyString);
+    }
+
+    private static bool TestRemove()
     {
         Trie trie = new();
 
@@ -37,10 +80,38 @@ public static class TrieTests
         trie.Add(longString);
         trie.Add(withoutCommonPrefix);
 
-        return trie.Contains(withoutCommonPrefix) &&
-               trie.Contains(normalString) &&
-               trie.Contains(prefixNormalString) &&
-               trie.Contains(longString) &&
-               !trie.Contains(emptyString);
+        var hasStringBeenDeleted = trie.Remove(emptyString);
+        if (hasStringBeenDeleted)
+        {
+            return false;
+        }
+
+        hasStringBeenDeleted = trie.Remove(normalString);
+        if (!hasStringBeenDeleted)
+        {
+            return false;
+        }
+
+        hasStringBeenDeleted = trie.Remove(normalString);
+        if (hasStringBeenDeleted)
+        {
+            return false;
+        }
+
+        trie.Remove(prefixNormalString);
+        trie.Remove(longString);
+
+        hasStringBeenDeleted = trie.Remove(withoutCommonPrefix);
+        if (!hasStringBeenDeleted)
+        {
+            return false;
+        }
+
+        return !trie.Contains(withoutCommonPrefix) &&
+               !trie.Contains(normalString) &&
+               !trie.Contains(prefixNormalString) &&
+               !trie.Contains(longString) &&
+               !trie.Contains(emptyString) &&
+               !trie.Contains("a non-existent string");
     }
 }
