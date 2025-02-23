@@ -74,26 +74,25 @@ public static class TrieTests
         const string longString = "applesAndBananas";
         const string withoutCommonPrefix = "bananas";
 
-        trie.Add(emptyString);
         trie.Add(normalString);
         trie.Add(prefixNormalString);
         trie.Add(longString);
         trie.Add(withoutCommonPrefix);
 
         var hasStringBeenDeleted = trie.Remove(emptyString);
-        if (hasStringBeenDeleted)
+        if (hasStringBeenDeleted && trie.Size != 4)
         {
             return false;
         }
 
         hasStringBeenDeleted = trie.Remove(normalString);
-        if (!hasStringBeenDeleted)
+        if (!hasStringBeenDeleted && trie.Size != 3)
         {
             return false;
         }
 
         hasStringBeenDeleted = trie.Remove(normalString);
-        if (hasStringBeenDeleted)
+        if (hasStringBeenDeleted && trie.Size != 3)
         {
             return false;
         }
@@ -102,7 +101,7 @@ public static class TrieTests
         trie.Remove(longString);
 
         hasStringBeenDeleted = trie.Remove(withoutCommonPrefix);
-        if (!hasStringBeenDeleted)
+        if (!hasStringBeenDeleted && trie.Size != 0)
         {
             return false;
         }

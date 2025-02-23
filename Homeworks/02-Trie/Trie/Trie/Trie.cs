@@ -105,6 +105,7 @@ public class Trie
         }
 
         currentNode.IsEndOfWord = false;
+        --this.Size;
         return true;
     }
 
