@@ -9,7 +9,7 @@ namespace Trie;
 /// </summary>
 public class Trie
 {
-    private readonly TrieNode root = new();
+    private readonly TrieNode root = new(0, false);
 
     /// <summary>
     /// Gets you to find out the number of words inside the trie.
@@ -33,7 +33,7 @@ public class Trie
         {
             if (!currentNode.Children.TryGetValue(symbol, out var nextNode))
             {
-                nextNode = new TrieNode();
+                nextNode = new TrieNode(0, false);
                 currentNode.Children[symbol] = nextNode;
             }
 
@@ -47,6 +47,14 @@ public class Trie
 
         currentNode.IsEndOfWord = true;
         ++this.Size;
+
+        currentNode = this.root;
+        foreach (var symbol in element)
+        {
+            currentNode = currentNode.Children[symbol];
+            ++currentNode.WordCount;
+        }
+
         return true;
     }
 
@@ -106,17 +114,47 @@ public class Trie
 
         currentNode.IsEndOfWord = false;
         --this.Size;
+
+        currentNode = this.root;
+        foreach (var symbol in element)
+        {
+            currentNode = currentNode.Children[symbol];
+            --currentNode.WordCount;
+        }
+
         return true;
     }
 
+    /// <summary>
+    /// The function allows you to find out how many lines start with a given prefix.
+    /// </summary>
+    /// <param name="prefix">The prefix of the string.</param>
+    /// <returns>The number of lines with the given prefix.</returns>
     public int HowManyStartsWithPrefix(string prefix)
     {
-        return 0;
+        if (string.IsNullOrEmpty(prefix))
+        {
+            return 0;
+        }
+
+        var currentNode = this.root;
+        foreach (var symbol in prefix)
+        {
+            if (!currentNode.Children.TryGetValue(symbol, out var nextNode))
+            {
+                return 0;
+            }
+
+            currentNode = nextNode;
+        }
+
+        return currentNode.WordCount;
     }
 
-    private class TrieNode
+    private class TrieNode(int wordCount, bool isEndOfWord)
     {
-        public Dictionary<char, TrieNode> Children = new();
-        public bool IsEndOfWord;
+        public readonly Dictionary<char, TrieNode> Children = new();
+        public bool IsEndOfWord = isEndOfWord;
+        public int WordCount = wordCount;
     }
 }

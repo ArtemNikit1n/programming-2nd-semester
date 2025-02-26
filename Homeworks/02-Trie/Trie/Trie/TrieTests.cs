@@ -18,7 +18,7 @@ public static class TrieTests
     /// </returns>
     public static bool RunTests()
     {
-        return TestAddAndContains() && TestRemove();
+        return TestAddAndContains() && TestRemoveAndHowManyStartsWithPrefix();
     }
 
     private static bool TestAddAndContains()
@@ -64,7 +64,7 @@ public static class TrieTests
                !trie.Contains(emptyString);
     }
 
-    private static bool TestRemove()
+    private static bool TestRemoveAndHowManyStartsWithPrefix()
     {
         Trie trie = new();
 
@@ -75,8 +75,23 @@ public static class TrieTests
         const string withoutCommonPrefix = "bananas";
 
         trie.Add(normalString);
+        if (trie.HowManyStartsWithPrefix("123") != 0 && trie.HowManyStartsWithPrefix("ap") != 1)
+        {
+            return false;
+        }
+
         trie.Add(prefixNormalString);
+        if (trie.HowManyStartsWithPrefix("app") != 2 && trie.HowManyStartsWithPrefix(string.Empty) != 0)
+        {
+            return false;
+        }
+
         trie.Add(longString);
+        if (trie.HowManyStartsWithPrefix("app") != 3)
+        {
+            return false;
+        }
+
         trie.Add(withoutCommonPrefix);
 
         var hasStringBeenDeleted = trie.Remove(emptyString);
@@ -86,7 +101,7 @@ public static class TrieTests
         }
 
         hasStringBeenDeleted = trie.Remove(normalString);
-        if (!hasStringBeenDeleted && trie.Size != 3)
+        if (!hasStringBeenDeleted && trie.Size != 3 && trie.HowManyStartsWithPrefix("ap") != 2)
         {
             return false;
         }
@@ -101,7 +116,7 @@ public static class TrieTests
         trie.Remove(longString);
 
         hasStringBeenDeleted = trie.Remove(withoutCommonPrefix);
-        if (!hasStringBeenDeleted && trie.Size != 0)
+        if (!hasStringBeenDeleted && trie.Size != 0 && trie.HowManyStartsWithPrefix("ap") != 0)
         {
             return false;
         }
