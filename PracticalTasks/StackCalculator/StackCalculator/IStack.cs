@@ -1,3 +1,7 @@
+// <copyright file="IStack.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace StackCalculator;
 
 /// <summary>

@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackCalculator", "StackCalculator\StackCalculator.csproj", "{CAD34481-A614-44F2-86D1-7B433D89C7FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackCalculator.Tests", "StackCalculator.Tests\StackCalculator.Tests.csproj", "{1E350830-BFEF-45EE-B294-95F643EEE864}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{CAD34481-A614-44F2-86D1-7B433D89C7FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAD34481-A614-44F2-86D1-7B433D89C7FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAD34481-A614-44F2-86D1-7B433D89C7FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E350830-BFEF-45EE-B294-95F643EEE864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E350830-BFEF-45EE-B294-95F643EEE864}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E350830-BFEF-45EE-B294-95F643EEE864}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E350830-BFEF-45EE-B294-95F643EEE864}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
