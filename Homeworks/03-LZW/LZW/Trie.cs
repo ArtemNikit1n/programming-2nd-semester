@@ -2,39 +2,36 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace Trie;
+namespace LZW;
 
 /// <summary>
-/// A data structure for storing a set of strings, which is a suspended tree with symbols on the edges.
+/// This data structure allows you to store byte sequences and their unique codes.
 /// </summary>
 public class Trie
 {
     private readonly TrieNode root = new(0, false);
 
-    /// <summary>
-    /// Gets you to find out the number of words inside the trie.
-    /// </summary>
-    public int Size { get; private set; }
+    private int Size { get; set; }
 
     /// <summary>
-    /// Adds an element to the trie.
+    /// Adds a sequence to the trie.
     /// </summary>
-    /// <param name="element">The string to be stored in the structure.</param>
+    /// <param name="sequence">The sequence to be stored in the structure.</param>
     /// <returns>Returns true if there has not been such a row yet.</returns>
-    public bool Add(string element)
+    public bool Add(List<byte> sequence)
     {
-        if (string.IsNullOrEmpty(element))
+        if (sequence.Count == 0)
         {
             return false;
         }
 
         var currentNode = this.root;
-        foreach (var symbol in element)
+        foreach (var element in sequence)
         {
-            if (!currentNode.Children.TryGetValue(symbol, out var nextNode))
+            if (!currentNode.Children.TryGetValue(element, out var nextNode))
             {
                 nextNode = new TrieNode(0, false);
-                currentNode.Children[symbol] = nextNode;
+                currentNode.Children[element] = nextNode;
             }
 
             currentNode = nextNode;
@@ -46,34 +43,27 @@ public class Trie
         }
 
         currentNode.IsEndOfWord = true;
+        currentNode.Code = this.Size;
         ++this.Size;
-
-        currentNode = this.root;
-        foreach (var symbol in element)
-        {
-            currentNode = currentNode.Children[symbol];
-            ++currentNode.WordCount;
-        }
-
         return true;
     }
 
     /// <summary>
-    /// Checks whether the string is contained in the trie.
+    /// Checks whether the sequence is contained in the trie.
     /// </summary>
-    /// <param name="element">The desired string.</param>
-    /// <returns>True means that the string is contained.</returns>
-    public bool Contains(string element)
+    /// <param name="sequence">The desired sequence.</param>
+    /// <returns>True means that the sequence is contained.</returns>
+    public bool Contains(List<byte> sequence)
     {
-        if (string.IsNullOrEmpty(element))
+        if (sequence.Count == 0)
         {
             return false;
         }
 
         var currentNode = this.root;
-        foreach (var symbol in element)
+        foreach (var element in sequence)
         {
-            if (!currentNode.Children.TryGetValue(symbol, out var nextNode))
+            if (!currentNode.Children.TryGetValue(element, out var nextNode))
             {
                 return false;
             }
@@ -85,23 +75,23 @@ public class Trie
     }
 
     /// <summary>
-    /// Removes an element from the trie.
+    /// Allows you to find out the unique sequence code.
     /// </summary>
-    /// <param name="element">The element to delete.</param>
-    /// <returns>Returns true if the element was actually in the village.</returns>
-    public bool Remove(string element)
+    /// <param name="sequence">The desired sequence.</param>
+    /// <returns>-1 means that the sequence was not found.</returns>
+    public int GetCode(List<byte> sequence)
     {
-        if (string.IsNullOrEmpty(element))
+        if (sequence.Count == 0)
         {
-            return false;
+            return -1;
         }
 
         var currentNode = this.root;
-        foreach (var symbol in element)
+        foreach (var element in sequence)
         {
-            if (!currentNode.Children.TryGetValue(symbol, out var nextNode))
+            if (!currentNode.Children.TryGetValue(element, out var nextNode))
             {
-                return false;
+                return -1;
             }
 
             currentNode = nextNode;
@@ -109,52 +99,16 @@ public class Trie
 
         if (!currentNode.IsEndOfWord)
         {
-            return false;
+            return -1;
         }
 
-        currentNode.IsEndOfWord = false;
-        --this.Size;
-
-        currentNode = this.root;
-        foreach (var symbol in element)
-        {
-            currentNode = currentNode.Children[symbol];
-            --currentNode.WordCount;
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// The function allows you to find out how many lines start with a given prefix.
-    /// </summary>
-    /// <param name="prefix">The prefix of the string.</param>
-    /// <returns>The number of lines with the given prefix.</returns>
-    public int HowManyStartsWithPrefix(string prefix)
-    {
-        if (string.IsNullOrEmpty(prefix))
-        {
-            return 0;
-        }
-
-        var currentNode = this.root;
-        foreach (var symbol in prefix)
-        {
-            if (!currentNode.Children.TryGetValue(symbol, out var nextNode))
-            {
-                return 0;
-            }
-
-            currentNode = nextNode;
-        }
-
-        return currentNode.WordCount;
+        return currentNode.Code;
     }
 
     private class TrieNode(int wordCount, bool isEndOfWord)
     {
-        public readonly Dictionary<char, TrieNode> Children = new();
+        public readonly Dictionary<byte, TrieNode> Children = new();
         public bool IsEndOfWord = isEndOfWord;
-        public int WordCount = wordCount;
+        public int Code = 0;
     }
 }

@@ -2,13 +2,51 @@ namespace LZW;
 
 public static class LZW
 {
-    public static void Compress(string input)
+    /// <summary>
+    /// The function compresses the file and adds an extension to it ".zipped".
+    /// </summary>
+    /// <param name="filePath">The path to the file you want to compress.</param>
+    public static void Compress(string filePath)
     {
-        Console.WriteLine(input);
+        var fileBytes = File.ReadAllBytes(filePath);
+        List<int> compressedData = [];
+
+        var trie = AddAlphabetToDictionary();
+
+        List<byte> currentBytes = [];
+        for (var i = 0; i != fileBytes.Length; ++i)
+        {
+            currentBytes.Add(fileBytes[i]);
+
+            if (trie.Contains(currentBytes))
+            {
+                continue;
+            }
+
+            trie.Add(currentBytes);
+            currentBytes = [fileBytes[i]];
+        }
+
+        if (currentBytes.Count > 0 && !trie.Contains(currentBytes))
+        {
+            trie.Add(currentBytes);
+        }
     }
 
     public static void Decompress(string compressedString)
     {
         Console.WriteLine(compressedString);
+    }
+
+    private static Trie AddAlphabetToDictionary()
+    {
+        var trie = new Trie();
+        for (byte i = 0; i != 255; ++i)
+        {
+            List<byte> currentByte = [i];
+            trie.Add(currentByte);
+        }
+
+        return trie;
     }
 }
