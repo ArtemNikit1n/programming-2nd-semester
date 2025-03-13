@@ -14,7 +14,7 @@ public static class LZW
         var trie = AddAlphabetToDictionary();
 
         List<byte> currentBytes = [];
-        for (var i = 0; i != fileBytes.Length; ++i)
+        for (var i = 0; i < fileBytes.Length; ++i)
         {
             currentBytes.Add(fileBytes[i]);
 
@@ -24,13 +24,20 @@ public static class LZW
             }
 
             trie.Add(currentBytes);
+            compressedData.Add(trie.GetCode(currentBytes));
+
             currentBytes = [fileBytes[i]];
         }
 
         if (currentBytes.Count > 0 && !trie.Contains(currentBytes))
         {
             trie.Add(currentBytes);
+            compressedData.Add(trie.GetCode(currentBytes));
         }
+
+        var compressedBytes = compressedData.SelectMany(BitConverter.GetBytes).ToArray();
+        var outputPath = Path.ChangeExtension(filePath, ".zipped");
+        File.WriteAllBytes(outputPath, compressedBytes);
     }
 
     public static void Decompress(string compressedString)
