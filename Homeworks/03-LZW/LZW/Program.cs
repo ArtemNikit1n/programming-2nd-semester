@@ -2,12 +2,44 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-Console.WriteLine("Hello ^_^! It is LZW algorithm.");
+Console.WriteLine("Hello ^_^! It is LZW algorithm.\n<filePath> <-c> compress the file\n<filePath> <-u> decompress the file");
 
-var (isCompressionSuccessful, originalExtension) = LZW.LZW.Compress(@"..\..\..\Data.txt");
-if (!isCompressionSuccessful)
+if (args.Length != 2)
 {
+    Console.WriteLine("Using: LZW.exe <filePath> <-c or -u>");
+    return 0;
+}
+
+var filePath = args[0];
+var operation = args[1];
+
+if (!File.Exists(filePath))
+{
+    Console.WriteLine("File not found: " + filePath);
     return 1;
 }
 
-return !LZW.LZW.Decompress(@"..\..\..\Data.zipped", originalExtension) ? 1 : 0;
+switch (operation)
+{
+    case "-c":
+        if (!LZW.LZW.Compress(filePath))
+        {
+            return 1;
+        }
+
+        Console.WriteLine("File compressed successfully");
+        return 0;
+    case "-u":
+        if (!LZW.LZW.Decompress(filePath))
+        {
+            return 1;
+        }
+
+        Console.WriteLine("File Decompressed successfully");
+        return 0;
+    default:
+        Console.WriteLine("Invalid key. Use -c for compression or -u for decompression.");
+        break;
+}
+
+return 0;

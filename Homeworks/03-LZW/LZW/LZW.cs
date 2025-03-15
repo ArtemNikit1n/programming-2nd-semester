@@ -14,15 +14,14 @@ public static class LZW
     /// </summary>
     /// <param name="filePath">The path to the file you want to compress.</param>
     /// <returns>True means that the file has been compressed successfully.</returns>
-    public static (bool IsCompressionSuccessful, string OriginalExtension) Compress(string filePath)
+    public static bool Compress(string filePath)
     {
         if (!File.Exists(filePath) || string.IsNullOrEmpty(filePath))
         {
-            return (false, string.Empty);
+            return false;
         }
 
         var fileBytes = File.ReadAllBytes(filePath);
-        var originalExtension = Path.GetExtension(filePath);
         List<ushort> compressedData = [];
 
         var trie = AddAlphabetToTrie();
@@ -42,7 +41,7 @@ public static class LZW
             currentBytes.RemoveAt(currentBytes.Count - 1);
             if (trie.Size >= ushort.MaxValue || trie.GetCode(currentBytes) >= ushort.MaxValue)
             {
-                return (false, originalExtension);
+                return false;
             }
 
             compressedData.Add((ushort)trie.GetCode(currentBytes));
@@ -54,25 +53,24 @@ public static class LZW
         {
             if (trie.Size >= ushort.MaxValue || trie.GetCode(currentBytes) >= ushort.MaxValue)
             {
-                return (false, originalExtension);
+                return false;
             }
 
             compressedData.Add((ushort)trie.GetCode(currentBytes));
         }
 
         CreateCompressedFile(compressedData, filePath);
-        return (true, originalExtension);
+        return true;
     }
 
     /// <summary>
     /// Creates a decoded file with the original extension.
     /// </summary>
     /// <param name="filePath">The path to the compressed file.</param>
-    /// <param name="fileExtension">Original extension.</param>
     /// <returns>True means that the file has been decompressed successfully.</returns>
-    public static bool Decompress(string filePath, string fileExtension)
+    public static bool Decompress(string filePath)
     {
-        if (!File.Exists(filePath) || string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(fileExtension))
+        if (!File.Exists(filePath) || string.IsNullOrEmpty(filePath))
         {
             return false;
         }
@@ -139,7 +137,7 @@ public static class LZW
 
         decompressedData.AddRange(currentSequence);
 
-        CreateDecompressedFile(decompressedData, filePath, fileExtension);
+        CreateDecompressedFile(decompressedData, filePath);
         return true;
     }
 
@@ -156,15 +154,18 @@ public static class LZW
         return compressedData;
     }
 
-    private static void CreateDecompressedFile(List<byte> decompressedData, string filePath, string fileExtension)
+    private static void CreateDecompressedFile(List<byte> decompressedData, string filePath)
     {
-        var outputPath = Path.ChangeExtension(filePath, fileExtension);
+        var outputPath = Path.ChangeExtension(filePath, string.Empty);
         File.WriteAllBytes(outputPath, decompressedData.ToArray());
     }
 
     private static void CreateCompressedFile(List<ushort> compressedData, string filePath)
     {
-        var outputPath = Path.ChangeExtension(filePath, ".zipped");
+        var fileName = Path.GetFileName(filePath);
+        var newFileName = fileName + ".zipped";
+        var outputPath = Path.Combine(Path.GetDirectoryName(filePath)!, newFileName);
+
         using var writer = new BinaryWriter(File.Open(outputPath, FileMode.Create));
         foreach (var code in compressedData)
         {
