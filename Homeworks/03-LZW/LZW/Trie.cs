@@ -11,7 +11,10 @@ public class Trie
 {
     private readonly TrieNode root = new(0, false);
 
-    private int Size { get; set; }
+    /// <summary>
+    /// Gets you to find out the number of words inside the trie.
+    /// </summary>
+    public int Size { get; private set; }
 
     /// <summary>
     /// Adds a sequence to the trie.
