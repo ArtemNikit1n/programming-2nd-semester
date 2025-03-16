@@ -27,7 +27,21 @@ switch (operation)
             return 1;
         }
 
-        Console.WriteLine("File compressed successfully");
+        FileInfo fileInfo = new(filePath);
+        FileInfo compressedFileInfo = new(filePath + ".zipped");
+        if (compressedFileInfo.Length != 0)
+        {
+            var compressionRatio = (double)fileInfo.Length / compressedFileInfo.Length;
+            Console.WriteLine(
+                "File compressed successfully" +
+                "\nCompression ratio: {0}",
+                compressionRatio);
+        }
+        else
+        {
+            Console.WriteLine("File is empty");
+        }
+
         return 0;
     case "-u":
         if (!LZW.LZW.Decompress(filePath))
