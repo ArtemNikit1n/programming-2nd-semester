@@ -11,10 +11,27 @@ public class LZWTests
 {
     private const string NormalDataPath = @"..\..\..\TestData\NormalData.txt";
     private const string CompressedNormalDataPath = @"..\..\..\TestData\NormalData.txt.zipped";
+    private const string BWTCompressedNormalDataPath = @"..\..\..\TestData\NormalData.txt.BWT.zipped";
     private const string EmptyDataPath = @"..\..\..\TestData\EmptyData.txt";
     private const string CompressedEmptyDataPath = @"..\..\..\TestData\EmptyData.txt.zipped";
     private const string BinaryFilePath = @"..\..\..\TestData\LZW.exe";
     private const string CompressedBinaryFilePath = @"..\..\..\TestData\LZW.exe.zipped";
+    private const string BWTCompressedBinaryFilePath = @"..\..\..\TestData\LZW.exe.BWT.zipped";
+
+    /// <summary>
+    /// This test is needed to verify that all files are being created correctly (it is also used to compare compression ratios with and without BWT).
+    /// </summary>
+    [Test]
+    public void LZW_CalculateCompressionRatioWithAndWithoutBWT_ShouldCompressFileUsingBWT_Multiple()
+    {
+        var (bwtCompressionRatioNormalData, compressionRatioNormalData) = LZW.CalculateCompressionRatioWithAndWithoutBWT(NormalDataPath);
+        var (bwtCompressionRatioBinaryFile, compressionRatioBinaryFile) = LZW.CalculateCompressionRatioWithAndWithoutBWT(BinaryFilePath);
+        Assert.Multiple(() =>
+        {
+            Assert.That(File.Exists(BWTCompressedNormalDataPath), Is.True);
+            Assert.That(File.Exists(BWTCompressedBinaryFilePath), Is.True);
+        });
+    }
 
     /// <summary>
     /// LZW should compress and decompress binary file correctly.

@@ -13,9 +13,19 @@ public class TrieTests
     private static readonly List<byte> PrefixNormalData = [255, 32];
     private static readonly List<byte> LongData = [255, 32, 54, 123, 43, 23, 0, 54, 20, 4];
     private static readonly List<byte> WithoutCommonPrefix = [0, 32, 54, 123, 43, 23, 0, 54];
+    private static readonly List<byte>[] AllData = [NormalData, PrefixNormalData, LongData, WithoutCommonPrefix];
     private readonly List<byte> emptyData = [];
 
-    private readonly Trie trie = new();
+    private Trie trie;
+
+    /// <summary>
+    /// Creates trie.
+    /// </summary>
+    [SetUp]
+    public void CreateTrie()
+    {
+        this.trie = new Trie();
+    }
 
     /// <summary>
     /// Trie contains should return false for empty strig.
@@ -38,45 +48,31 @@ public class TrieTests
     /// <summary>
     /// Trie add should return true for non-empty string.
     /// </summary>
+    /// <param name="data">A set of test data.</param>
     [Test]
-    public void Trie_Add_ShouldReturnTrueForNonEmptyString()
+    public void Trie_Add_ShouldReturnTrueForNonEmptyString([ValueSource(nameof(AllData))] List<byte> data)
     {
-        Assert.That(this.trie.Add(TrieTests.LongData), Is.True);
+        Assert.That(this.trie.Add(data), Is.True);
     }
 
     /// <summary>
     /// Trie add should return true for non-empty string (multiple).
     /// </summary>
+    /// <param name="data">A set of test data.</param>
     [Test]
-    public void Trie_Add_ShouldReturnTrueForNonEmptyString_Multiple()
+    public void Trie_Add_ShouldReturnTrueForNonEmptyString_Multiple([ValueSource(nameof(AllData))] List<byte> data)
     {
-        Assert.Multiple(() =>
-        {
-            Assert.That(this.trie.Add(TrieTests.NormalData), Is.True);
-            Assert.That(this.trie.Add(TrieTests.PrefixNormalData), Is.True);
-            Assert.That(this.trie.Add(TrieTests.LongData), Is.True);
-            Assert.That(this.trie.Add(TrieTests.WithoutCommonPrefix), Is.True);
-        });
+        Assert.That(this.trie.Add(data), Is.True);
     }
 
     /// <summary>
     /// Trie contains should return true for added string (multiple).
     /// </summary>
+    /// <param name="data">A set of test data.</param>
     [Test]
-    public void Trie_Contains_ShouldReturnTrueForAddedString_Multiple()
+    public void Trie_Contains_ShouldReturnTrueForAddedString_Multiple([ValueSource(nameof(AllData))] List<byte> data)
     {
-        this.trie.Add(NormalData);
-        this.trie.Add(PrefixNormalData);
-        this.trie.Add(LongData);
-        this.trie.Add(WithoutCommonPrefix);
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(this.trie.Contains(WithoutCommonPrefix), Is.True);
-            Assert.That(this.trie.Contains(NormalData), Is.True);
-            Assert.That(this.trie.Contains(PrefixNormalData), Is.True);
-            Assert.That(this.trie.Contains(LongData), Is.True);
-            Assert.That(this.trie.Contains(this.emptyData), Is.False);
-        });
+        this.trie.Add(data);
+        Assert.That(this.trie.Contains(data), Is.True);
     }
 }

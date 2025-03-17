@@ -141,6 +141,39 @@ public static class LZW
         return true;
     }
 
+    /// <summary>
+    /// Compresses files with and without BWT and calculates the compression ratio.
+    /// </summary>
+    /// <param name="filePath">The path to the file you want to compress.</param>
+    /// <returns>Compression Ratio With BWT and without BWT.</returns>
+    public static (double BWTCompressionRatio, double CompressionRatio) CalculateCompressionRatioWithAndWithoutBWT(
+        string filePath)
+    {
+        var fileBytes = File.ReadAllBytes(filePath);
+        var (transformedSequence, endPosition) = BWT.Transform(fileBytes.ToList());
+
+        var fileName = Path.GetFileName(filePath);
+        var bwtPath = Path.Combine(Path.GetDirectoryName(filePath)!, fileName + ".BWT");
+        File.WriteAllBytes(bwtPath, transformedSequence.ToArray());
+
+        Compress(bwtPath);
+        Compress(filePath);
+
+        return (CalculateCompressionRatio(bwtPath), CalculateCompressionRatio(filePath));
+    }
+
+    private static double CalculateCompressionRatio(string filePath)
+    {
+        FileInfo fileInfo = new(filePath);
+        FileInfo compressedFileInfo = new(filePath + ".zipped");
+        if (compressedFileInfo.Length == 0)
+        {
+            return -1;
+        }
+
+        return (double)fileInfo.Length / compressedFileInfo.Length;
+    }
+
     private static List<ushort> ReadCompressedFile(string filePath)
     {
         List<ushort> compressedData = [];

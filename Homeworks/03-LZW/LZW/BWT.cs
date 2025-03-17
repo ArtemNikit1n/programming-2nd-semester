@@ -4,23 +4,21 @@
 
 namespace LZW
 {
-    using System.Text;
-
     /// <summary>
-    /// This is a class for applying the forward and reverse Burrows-Wheeler transformations to a string.
+    /// This is a class for applying the forward and reverse Burrows-Wheeler transformations to a byte sequence.
     /// </summary>
     public static class BWT
     {
         /// <summary>
         /// Performs a direct Barrows-Wheeler transformation.
         /// </summary>
-        /// <param name="input">The string that the conversion is being performed on.</param>
-        /// <returns>The first parameter returns the converted string, and the second parameter returns the index of the last character in that string.</returns>
-        public static (string TransformedString, int EndPosition) Transform(string input)
+        /// <param name="input">The byte sequence that the conversion is being performed on.</param>
+        /// <returns>The first parameter returns the converted byte sequence, and the second parameter returns the index of the last byte in that byte sequence.</returns>
+        public static (List<byte> TransformedSequence, int EndPosition) Transform(List<byte> input)
         {
-            if (input == string.Empty)
+            if (input.Count == 0)
             {
-                return (string.Empty, -1);
+                return (input, -1);
             }
 
             var rotations = GenerateRotations(input);
@@ -30,37 +28,39 @@ namespace LZW
         }
 
         /// <summary>
-        /// Builds the original version of the transformed string.
+        /// Builds the original version of the transformed byte sequence.
         /// </summary>
-        /// <param name="transformedString">The string after the conversion.</param>
-        /// <param name="endPosition">The index of the last character.</param>
-        /// <returns>The original line.</returns>
-        public static string InverseTransform(string transformedString, int endPosition)
+        /// <param name="transformedSequence">The byte sequence after the conversion.</param>
+        /// <param name="endPosition">The index of the last byte.</param>
+        /// <returns>The original sequence.</returns>
+        public static List<byte> InverseTransform(List<byte> transformedSequence, int endPosition)
         {
-            if (transformedString == string.Empty)
+            if (transformedSequence.Count == 0)
             {
-                return string.Empty;
+                return transformedSequence;
             }
 
-            var (frequencies, rank) = CountNumberOfEachSymbolAndItsRank(transformedString);
+            var (frequencies, rank) = CountNumberOfEachSymbolAndItsRank(transformedSequence);
             var firstOccurrence = GetDictionaryOfFirstOccurrences(frequencies);
 
-            return string.Create(transformedString.Length, (transformedString, endPosition), (span, state) =>
-            {
-                var index = state.endPosition;
+            List<byte> result = [];
+            var currentPosition = endPosition;
 
-                for (var i = state.transformedString.Length - 1; i >= 0; --i)
-                {
-                    var symbol = state.transformedString[index];
-                    span[i] = symbol;
-                    index = firstOccurrence[symbol] + rank[index];
-                }
-            });
+            foreach (var currentSymbol in transformedSequence.Select(element => transformedSequence[currentPosition]))
+            {
+                result.Add(currentSymbol);
+
+                currentPosition = firstOccurrence[currentSymbol] + rank[currentPosition];
+            }
+
+            result.Reverse();
+            return result;
         }
 
         private static Rotation GetLastColumn(Rotation[] rotations)
         {
-            var lastColumn = new StringBuilder(new string('\0', rotations.Length));
+            List<byte> lastColumn = new(rotations.Length);
+
             var endPosition = 0;
 
             for (var i = 0; i < rotations.Length; ++i)
@@ -71,19 +71,17 @@ namespace LZW
                     endPosition = i;
                 }
 
-                lastColumn[i] = rotation.Permutation[(((rotation.EndPosition - 1) % rotations.Length) + rotations.Length) % rotations.Length];
+                lastColumn.Add(rotation.Permutation[(((rotation.EndPosition - 1) % rotations.Length) + rotations.Length) % rotations.Length]);
             }
 
-            var resultingRotation = new Rotation(lastColumn.ToString(), endPosition);
-
-            return resultingRotation;
+            return new Rotation(lastColumn, endPosition);
         }
 
-        private static Rotation[] GenerateRotations(string input)
+        private static Rotation[] GenerateRotations(List<byte> input)
         {
-            var rotations = new Rotation[input.Length];
+            var rotations = new Rotation[input.Count];
 
-            for (var i = 0; i < input.Length; ++i)
+            for (var i = 0; i < input.Count; ++i)
             {
                 rotations[i] = new Rotation(input, i);
             }
@@ -91,12 +89,12 @@ namespace LZW
             return rotations;
         }
 
-        private static Dictionary<char, int> GetDictionaryOfFirstOccurrences(Dictionary<char, int> frequencies)
+        private static Dictionary<byte, int> GetDictionaryOfFirstOccurrences(Dictionary<byte, int> frequencies)
         {
-            var sortedSymbols = new List<char>(frequencies.Keys);
+            List<byte> sortedSymbols = new(frequencies.Keys);
             sortedSymbols.Sort();
 
-            var firstOccurrence = new Dictionary<char, int>();
+            Dictionary<byte, int> firstOccurrence = new();
             var cumulativeCount = 0;
 
             foreach (var symbol in sortedSymbols)
@@ -108,11 +106,11 @@ namespace LZW
             return firstOccurrence;
         }
 
-        private static (Dictionary<char, int> Frequencies, int[] Rank) CountNumberOfEachSymbolAndItsRank(string input)
+        private static (Dictionary<byte, int> Frequencies, int[] Rank) CountNumberOfEachSymbolAndItsRank(List<byte> input)
         {
-            var rank = new int[input.Length];
-            var frequencies = new Dictionary<char, int>();
-            for (var i = 0; i < input.Length; i++)
+            var rank = new int[input.Count];
+            var frequencies = new Dictionary<byte, int>();
+            for (var i = 0; i < input.Count; i++)
             {
                 var symbol = input[i];
 
@@ -130,26 +128,26 @@ namespace LZW
             return (frequencies, rank);
         }
 
-        private readonly struct Rotation(string stringForCyclicShifts, int endPosition) : IComparable<Rotation>
+        private readonly struct Rotation(List<byte> sequenceForCyclicShifts, int endPosition) : IComparable<Rotation>
         {
-            public string Permutation { get; } = stringForCyclicShifts;
+            public List<byte> Permutation { get; } = sequenceForCyclicShifts;
 
             public int EndPosition { get; } = endPosition;
 
             public int CompareTo(Rotation other)
             {
-                if (string.IsNullOrEmpty(this.Permutation))
+                if (this.Permutation.Count == 0)
                 {
-                    return string.IsNullOrEmpty(other.Permutation) ? 0 : -1;
+                    return other.Permutation.Count == 0 ? 0 : -1;
                 }
 
-                if (string.IsNullOrEmpty(other.Permutation))
+                if (other.Permutation.Count == 0)
                 {
                     return 1;
                 }
 
-                var i = this.EndPosition % this.Permutation.Length;
-                var j = other.EndPosition % other.Permutation.Length;
+                var i = this.EndPosition % this.Permutation.Count;
+                var j = other.EndPosition % other.Permutation.Count;
 
                 foreach (var unused in this.Permutation)
                 {
@@ -158,8 +156,8 @@ namespace LZW
                         return this.Permutation[i].CompareTo(other.Permutation[j]);
                     }
 
-                    i = (i + 1) % this.Permutation.Length;
-                    j = (j + 1) % other.Permutation.Length;
+                    i = (i + 1) % this.Permutation.Count;
+                    j = (j + 1) % other.Permutation.Count;
                 }
 
                 return 0;

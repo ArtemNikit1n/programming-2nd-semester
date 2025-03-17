@@ -17,10 +17,10 @@ public static class BWTTests
     {
         Assert.Multiple(() =>
         {
-            Assert.That(BWT.Transform("ABACABA"), Is.EqualTo(("BCABAAA", 2)));
-            Assert.That(BWT.Transform(string.Empty), Is.EqualTo((string.Empty, -1)));
-            Assert.That(BWT.Transform("0"), Is.EqualTo(("0", 0)));
-            Assert.That(BWT.Transform("Pneumonoultramicroscopicsilicovolcanoconiosis"), Is.EqualTo(("srclosiiinlmpsnsoiuauPoaonvcmcrincotciocoloeo", 0)));
+            Assert.That(BWT.Transform([1, 2, 1, 3, 1, 2, 1]), Is.EqualTo(((List<byte>)[2, 3, 1, 2, 1, 1, 1], 2)));
+            Assert.That(BWT.Transform([]), Is.EqualTo(((List<byte>)[], -1)));
+            Assert.That(BWT.Transform([0]), Is.EqualTo(((List<byte>)[0], 0)));
+            Assert.That(BWT.Transform([255, 255, 255, 255, 255]), Is.EqualTo(((List<byte>)[255, 255, 255, 255, 255], 0)));
         });
     }
 
@@ -32,10 +32,10 @@ public static class BWTTests
     {
         Assert.Multiple(() =>
         {
-            Assert.That(BWT.InverseTransform("BCABAAA", 2), Is.EqualTo("ABACABA"));
-            Assert.That(BWT.InverseTransform(string.Empty, -1), Is.EqualTo(string.Empty));
-            Assert.That(BWT.InverseTransform("0", 0), Is.EqualTo("0"));
-            Assert.That(BWT.InverseTransform("srclosiiinlmpsnsoiuauPoaonvcmcrincotciocoloeo", 0), Is.EqualTo("Pneumonoultramicroscopicsilicovolcanoconiosis"));
+            Assert.That(BWT.InverseTransform([2, 3, 1, 2, 1, 1, 1], 2), Is.EqualTo((List<byte>)[1, 2, 1, 3, 1, 2, 1]));
+            Assert.That(BWT.InverseTransform([], -1), Is.EqualTo((List<byte>)[]));
+            Assert.That(BWT.InverseTransform([0], 0), Is.EqualTo((List<byte>)[0]));
+            Assert.That(BWT.InverseTransform([255, 255, 255, 255, 255], 0), Is.EqualTo((List<byte>)[255, 255, 255, 255, 255]));
         });
     }
 }

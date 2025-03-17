@@ -33,9 +33,8 @@ switch (operation)
         {
             var compressionRatio = (double)fileInfo.Length / compressedFileInfo.Length;
             Console.WriteLine(
-                "File compressed successfully" +
-                "\nCompression ratio: {0}",
-                compressionRatio);
+                    "File compressed successfully" +
+                $"\nCompression ratio: {compressionRatio}");
         }
         else
         {
