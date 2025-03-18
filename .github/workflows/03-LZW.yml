@@ -3,23 +3,23 @@ name: BuildLZW
 on: [push, pull_request]
 
 jobs:
-build-Ubuntu:
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '9.x'
-    - name: Build
-      run: dotnet build ./Homeworks/03-LZW/03-LZW.sln
-    - name: Run tests
-      run: dotnet test ./Homeworks/03-LZW/03-LZW.sln
-build-Windows:
-  runs-on: windows-latest
-  steps:
-    - name: Build
-      shell: cmd
-      run: dotnet build .\Homeworks\03-LZW\03-LZW.sln
-    - name: Run tests
-      shell: cmd
-      run: For /R %%I in (*.sln) do dotnet test %%I
+  build-Ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+      - name: Build
+        run: dotnet build ./Homeworks/03-LZW/03-LZW.sln
+      - name: Run tests
+        run: dotnet test ./Homeworks/03-LZW/03-LZW.sln
+  build-Windows:
+    runs-on: windows-latest
+    steps:
+      - name: Build
+        shell: cmd
+        run: dotnet build .\Homeworks\03-LZW\03-LZW.sln
+      - name: Run tests
+        shell: cmd
+        run: For /R %%I in (*.sln) do dotnet test %%I
