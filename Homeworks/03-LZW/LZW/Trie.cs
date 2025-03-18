@@ -9,7 +9,7 @@ namespace LZW;
 /// </summary>
 public class Trie
 {
-    private readonly TrieNode root = new(0, false);
+    private readonly TrieNode root = new(false);
 
     /// <summary>
     /// Gets you to find out the number of words inside the trie.
@@ -33,7 +33,7 @@ public class Trie
         {
             if (!currentNode.Children.TryGetValue(element, out var nextNode))
             {
-                nextNode = new TrieNode(0, false);
+                nextNode = new TrieNode(false);
                 currentNode.Children[element] = nextNode;
             }
 
@@ -108,10 +108,12 @@ public class Trie
         return currentNode.Code;
     }
 
-    private class TrieNode(int wordCount, bool isEndOfWord)
+    private class TrieNode(bool isEndOfWord)
     {
-        public readonly Dictionary<byte, TrieNode> Children = new();
-        public bool IsEndOfWord = isEndOfWord;
-        public int Code = 0;
+        public Dictionary<byte, TrieNode> Children { get; } = new();
+
+        public bool IsEndOfWord { get; set; } = isEndOfWord;
+
+        public int Code { get; set; }
     }
 }
