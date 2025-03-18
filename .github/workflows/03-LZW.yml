@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Build
         shell: cmd
-        run: dotnet build Homeworks\03-LZW\03-LZW.sln
+        run: dotnet build Homeworks/03-LZW/03-LZW.sln
       - name: Run tests
         shell: cmd
-        run: dotnet test Homeworks\03-LZW\03-LZW.sln
+        run: dotnet test Homeworks/03-LZW/03-LZW.sln
