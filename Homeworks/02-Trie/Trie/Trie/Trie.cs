@@ -153,8 +153,10 @@ public class Trie
 
     private class TrieNode(int wordCount, bool isEndOfWord)
     {
-        public readonly Dictionary<char, TrieNode> Children = new();
-        public bool IsEndOfWord = isEndOfWord;
-        public int WordCount = wordCount;
+        public Dictionary<char, TrieNode> Children { get; } = new();
+
+        public bool IsEndOfWord { get; set; } = isEndOfWord;
+
+        public int WordCount { get; set; } = wordCount;
     }
 }
