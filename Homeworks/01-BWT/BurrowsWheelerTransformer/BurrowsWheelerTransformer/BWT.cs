@@ -9,7 +9,7 @@ namespace BurrowsWheelerTransformer
     /// <summary>
     /// This is a class for applying the forward and reverse Burrows-Wheeler transformations to a string.
     /// </summary>
-    public abstract class BWT
+    public static class BWT
     {
         /// <summary>
         /// Performs a direct Barrows-Wheeler transformation.
