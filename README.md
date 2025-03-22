@@ -1,2 +1,6 @@
-# programming-2nd-semester
-Homework, practical tasks, and assessments in C# programming for the second semester.
+1. Барроуз-Уилер
+2. Бор
+3. LZW
+4. Строка приглашения
+5. Роутеры
+6. Дерево разбора
