@@ -1,4 +1,4 @@
-// <copyright file="Graph.cs" company="PlaceholderCompany">
+// <copyright file="Graph.cs" company="ArtemNikit1n">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -26,7 +26,27 @@ public class Graph
     public Graph(string filePath)
     {
         this.adjacencyList = new Dictionary<int, List<(int, int)>>();
-        LoadFromFile(filePath);
+        this.LoadFromFile(filePath);
+    }
+
+    /// <summary>
+    /// Saves the graph to a file in the format "vertex: neighbor(bandwidth), ...".
+    /// </summary>
+    /// <param name="filePath">The path to the file to save.</param>
+    public void SaveToFile(string filePath)
+    {
+        using var writer = new StreamWriter(filePath);
+
+        var sortedVertices = this.adjacencyList.Keys.OrderBy(v => v);
+
+        foreach (var vertex in sortedVertices)
+        {
+            var sortedNeighbors = this.adjacencyList[vertex]
+                .OrderBy(connection => connection.Neighbor)
+                .Select(connection => $"{connection.Neighbor} ({connection.EdgeWeight})");
+
+            writer.WriteLine($"{vertex}: {string.Join(", ", sortedNeighbors)}");
+        }
     }
 
     /// <summary>
@@ -126,15 +146,73 @@ public class Graph
         return false;
     }
 
-    private static void LoadFromFile(string filePath)
+    private void LoadFromFile(string filePath)
     {
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException($"Graph file not found: {filePath}");
+        }
+
+        var lines = File.ReadAllLines(filePath);
+        foreach (var line in lines)
+        {
+            if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith("#"))
+            {
+                continue;
+            }
+
+            var parts = line.Split(':');
+            if (parts.Length != 2)
+            {
+                throw new FormatException($"Invalid line format: {line}");
+            }
+
+            if (!int.TryParse(parts[0].Trim(), out var vertex))
+            {
+                throw new FormatException($"Invalid vertex number: {parts[0]}");
+            }
+
+            if (!this.adjacencyList.ContainsKey(vertex))
+            {
+                this.adjacencyList[vertex] = new List<(int, int)>();
+            }
+
+            var connections = parts[1].Split(',');
+            foreach (var connection in connections)
+            {
+                var trimmed = connection.Trim();
+                if (string.IsNullOrEmpty(trimmed))
+                {
+                    continue;
+                }
+
+                var bracketStart = trimmed.IndexOf('(');
+                var bracketEnd = trimmed.IndexOf(')');
+
+                if (bracketStart < 0 || bracketEnd < 0 || bracketEnd <= bracketStart)
+                {
+                    throw new FormatException($"Invalid connection format: {trimmed}");
+                }
+
+                var stringNeighbor = trimmed[..bracketStart].Trim();
+                var stringBandwidth = trimmed.Substring(bracketStart + 1, bracketEnd - bracketStart - 1).Trim();
+
+                if (!int.TryParse(stringNeighbor, out var neighbor) ||
+                    !int.TryParse(stringBandwidth, out var bandwidth))
+                {
+                    throw new FormatException($"Invalid connection values: {trimmed}");
+                }
+
+                this.AddEdge(vertex, neighbor, bandwidth);
+            }
+        }
     }
 
     private bool IsConnected()
     {
         if (this.adjacencyList.Count == 0)
         {
-            return true;
+            return false;
         }
 
         HashSet<int> visited = [];

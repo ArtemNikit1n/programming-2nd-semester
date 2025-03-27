@@ -1,4 +1,4 @@
-// <copyright file="GraphNotConnectedException.cs" company="PlaceholderCompany">
+// <copyright file="GraphNotConnectedException.cs" company="ArtemNikit1n">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 

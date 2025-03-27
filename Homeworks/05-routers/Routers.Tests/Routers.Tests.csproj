@@ -28,4 +28,8 @@
       <ProjectReference Include="..\Routers\Routers.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="TestData\" />
+    </ItemGroup>
+
 </Project>
