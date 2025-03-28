@@ -1,5 +1,3 @@
-
-
 public class EventLoop
 {
     public event EventHandler<EventArgs> LeftHandler = (sender, args) => { };

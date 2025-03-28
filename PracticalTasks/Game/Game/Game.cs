@@ -4,21 +4,28 @@ public class Game
 {
     public void OnLeft(object sender, EventArgs args)
     {
-        Console.WriteLine("Going left");
+        Console.CursorLeft--;
+        Console.Write("@");
+        Console.CursorLeft--;
     }
 
     public void OnRight(object sender, EventArgs args)
     {
-        Console.WriteLine("Going right");
+        Console.CursorLeft++;
+        Console.Write("@");
     }
 
     public void OnUp(object sender, EventArgs args)
     {
-        Console.WriteLine("Going up");
+        Console.CursorTop--;
+        Console.Write("@");
+        Console.CursorLeft--;
     }
 
     public void OnDown(object sender, EventArgs args)
     {
-        Console.WriteLine("Going down");
+        Console.CursorTop++;
+        Console.Write("@");
+        Console.CursorLeft--;
     }
 }
