@@ -2,4 +2,13 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-Console.WriteLine("Hello, World!");
+
+var eventLoop = new EventLoop();
+var game = new Game();
+
+eventLoop.LeftHandler += game.OnLeft;
+eventLoop.RightHandler += game.OnRigth;
+
+var log = new List<string>();
+
+eventLoop.Run();
