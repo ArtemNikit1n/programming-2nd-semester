@@ -8,7 +8,7 @@ var game = new Game();
 
 eventLoop.LeftHandler += game.OnLeft;
 eventLoop.RightHandler += game.OnRigth;
-
-var log = new List<string>();
+eventLoop.UpHandler += game.OnUp;
+eventLoop.DownHandler += game.OnDown;
 
 eventLoop.Run();
