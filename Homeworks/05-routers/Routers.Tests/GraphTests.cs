@@ -89,6 +89,20 @@ public class GraphTests
         Assert.Throws<GraphNotConnectedException>(() => this.emptyGraph.GetMaximumSpanningTree());
     }
 
+    /// <summary>
+    /// SaveToFile should record the same graph as when uploading.
+    /// </summary>
+    [Test]
+    public void SaveToFile_ShouldRecordSameGraphAsWhenUploading()
+    {
+        const string expectedPath = "../../../TestData/Expected.txt";
+        const string resultPath = "../../../TestData/Result.txt";
+
+        Graph graph = new(expectedPath);
+        graph.SaveToFile(resultPath);
+        Assert.That(AreTextFilesEqual(expectedPath, resultPath), Is.True);
+    }
+
     private static bool AreTextFilesEqual(string filePath1, string filePath2)
     {
         var lines1 = File.ReadLines(filePath1);

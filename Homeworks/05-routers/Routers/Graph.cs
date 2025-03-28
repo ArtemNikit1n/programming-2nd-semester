@@ -9,14 +9,14 @@ namespace Routers;
 /// </summary>
 public class Graph
 {
-    private Dictionary<int, List<(int Neighbor, int EdgeWeight)>> adjacencyList;
+    private Dictionary<int, HashSet<(int Neighbor, int EdgeWeight)>> adjacencyList;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Graph"/> class.
     /// </summary>
     public Graph()
     {
-        this.adjacencyList = new Dictionary<int, List<(int, int)>>();
+        this.adjacencyList = new Dictionary<int, HashSet<(int, int)>>();
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ public class Graph
     /// <param name="filePath">Your file path.</param>
     public Graph(string filePath)
     {
-        this.adjacencyList = new Dictionary<int, List<(int, int)>>();
+        this.adjacencyList = new Dictionary<int, HashSet<(int, int)>>();
         this.LoadFromFile(filePath);
     }
 
@@ -96,7 +96,7 @@ public class Graph
     {
         if (!this.adjacencyList.ContainsKey(vertex))
         {
-            this.adjacencyList[vertex] = new List<(int, int)>();
+            this.adjacencyList[vertex] = new HashSet<(int, int)>();
         }
     }
 
@@ -174,7 +174,7 @@ public class Graph
 
             if (!this.adjacencyList.ContainsKey(vertex))
             {
-                this.adjacencyList[vertex] = new List<(int, int)>();
+                this.adjacencyList[vertex] = new HashSet<(int, int)>();
             }
 
             var connections = parts[1].Split(',');
