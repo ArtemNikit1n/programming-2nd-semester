@@ -4,11 +4,9 @@
 
 
 var eventLoop = new EventLoop();
-var game = new Game();
+var game = new Game.Game();
 
 eventLoop.LeftHandler += game.OnLeft;
-eventLoop.RightHandler += game.OnRigth;
-
-var log = new List<string>();
+eventLoop.RightHandler += game.OnRight;
 
 eventLoop.Run();
