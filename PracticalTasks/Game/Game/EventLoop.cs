@@ -23,7 +23,7 @@ public class EventLoop
                 case ConsoleKey.UpArrow:
                     UpHandler(this, EventArgs.Empty);
                     break;
-                case ConsoleKey.RightArrow:
+                case ConsoleKey.DownArrow:
                     DownHandler(this, EventArgs.Empty);
                     break;
             }

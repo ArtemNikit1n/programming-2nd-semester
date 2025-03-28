@@ -14,11 +14,11 @@ public class Game
 
     public void OnUp(object sender, EventArgs args)
     {
-        Console.WriteLine("Going left");
+        Console.WriteLine("Going up");
     }
 
     public void OnDown(object sender, EventArgs args)
     {
-        Console.WriteLine("Going right");
+        Console.WriteLine("Going down");
     }
 }
