@@ -1,4 +1,15 @@
-﻿namespace ParsingTree.Tests;
+﻿// <copyright file="NodeTests.cs" company="ArtemNikit1n">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: ComVisible(true)]
+[assembly: CLSCompliant(true)]
+
+namespace ParsingTree.Tests;
 
 /// <summary>
 /// Tests for tree.
@@ -22,8 +33,9 @@ public class NodeTests
     [Test]
     public void AddLeft_ShouldAddLeftSon()
     {
-        this.root.AddLeft(new Node(-100));
-        Assert.That(this.root.Left.Value, Is.EqualTo(-100));
+        const int leftSonValue = -100;
+        this.root.AddLeft(new Node(leftSonValue));
+        Assert.That(this.root.Left.Value, Is.EqualTo(leftSonValue));
     }
 
     /// <summary>
@@ -32,7 +44,8 @@ public class NodeTests
     [Test]
     public void AddRight_ShouldAddRightSon()
     {
-        this.root.AddRight(new Node(100));
-        Assert.That(this.root.Right.Value, Is.EqualTo(100));
+        const int rightSonValue = 100;
+        this.root.AddRight(new Node(rightSonValue));
+        Assert.That(this.root.Right.Value, Is.EqualTo(rightSonValue));
     }
 }
