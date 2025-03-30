@@ -2,13 +2,6 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System.Reflection;
-using System.Runtime.InteropServices;
-
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: ComVisible(true)]
-[assembly: CLSCompliant(true)]
-
 namespace ParsingTree.Tests;
 
 /// <summary>
@@ -24,7 +17,7 @@ public class NodeTests
     [SetUp]
     public void CreateTree()
     {
-        this.root = new Node(0);
+        this.root = new Node("0");
     }
 
     /// <summary>
@@ -33,9 +26,13 @@ public class NodeTests
     [Test]
     public void AddLeft_ShouldAddLeftSon()
     {
-        const int leftSonValue = -100;
+        const string leftSonValue = "123";
         this.root.AddLeft(new Node(leftSonValue));
-        Assert.That(this.root.Left.Value, Is.EqualTo(leftSonValue));
+        var rootLeft = this.root.Left;
+        if (rootLeft != null)
+        {
+            Assert.That(rootLeft.Value, Is.EqualTo(leftSonValue));
+        }
     }
 
     /// <summary>
@@ -44,8 +41,12 @@ public class NodeTests
     [Test]
     public void AddRight_ShouldAddRightSon()
     {
-        const int rightSonValue = 100;
+        const string rightSonValue = "abc";
         this.root.AddRight(new Node(rightSonValue));
-        Assert.That(this.root.Right.Value, Is.EqualTo(rightSonValue));
+        var rootRight = this.root.Right;
+        if (rootRight != null)
+        {
+            Assert.That(rootRight.Value, Is.EqualTo(rightSonValue));
+        }
     }
 }

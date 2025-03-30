@@ -2,36 +2,28 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using System.Reflection;
-using System.Runtime.InteropServices;
-
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: ComVisible(true)]
-[assembly: CLSCompliant(true)]
-
 namespace ParsingTree;
 
-
-    /// <summary>
-    /// The node of the tree.
-    /// </summary>
-    /// <param name="value">The value set in the node.</param>
-public class Node(int value)
+/// <summary>
+/// The node of the tree.
+/// </summary>
+/// <param name="value">The value set in the node.</param>
+public class Node(string value)
 {
     /// <summary>
     /// Gets or sets a field for storing information about a node.
     /// </summary>
-    public int Value { get; set; } = value;
+    public string Value { get; set; } = value;
 
     /// <summary>
-    /// Gets or sets a field for storing information about a left child.
+    /// Gets a field for storing information about a left child.
     /// </summary>
-    public Node? Left { get; set; }
+    public Node? Left { get; private set; }
 
     /// <summary>
-    /// Gets or sets a field for storing information about a right child.
+    /// Gets a field for storing information about a right child.
     /// </summary>
-    public Node? Right { get; set; }
+    public Node? Right { get; private set; }
 
     /// <summary>
     /// Adds the left son to the current node.
