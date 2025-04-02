@@ -18,6 +18,9 @@ public class Game
         this.ReadMap();
         this.WriteMap();
 
+        Console.SetCursorPosition(0, Height + 1);
+        this.PrintWelcomeMassage();
+
         Console.SetCursorPosition(0, 0);
         Console.Write("@");
     }
@@ -83,6 +86,13 @@ public class Game
         Console.Write("@");
     }
 
+    public void End(object sender, EventArgs args)
+    {
+        Console.SetCursorPosition(Width, Height + 2);
+        Console.CursorVisible = true;
+        Console.WriteLine();
+    }
+
     private void ReadMap()
     {
         if (!File.Exists(MapFilePath))
@@ -114,5 +124,10 @@ public class Game
 
             Console.WriteLine();
         }
+    }
+
+    private void PrintWelcomeMassage()
+    {
+        Console.WriteLine("Welcome to the game! To move - arrows, to exit - Esc");
     }
 }
