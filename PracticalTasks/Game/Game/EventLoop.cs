@@ -5,35 +5,39 @@
 namespace Game;
 
 /// <summary>
-/// event loop.
+/// Event loop.
 /// </summary>
 public class EventLoop
 {
     /// <summary>
-    /// handler of left arrow.
+    /// Handler of left arrow.
     /// </summary>
     public event EventHandler<EventArgs> LeftHandler = (_, _) => { };
 
     /// <summary>
-    /// handler of right arrow.
+    /// Handler of right arrow.
     /// </summary>
     public event EventHandler<EventArgs> RightHandler = (_, _) => { };
 
     /// <summary>
-    /// handler of up arrow.
+    /// Handler of up arrow.
     /// </summary>
     public event EventHandler<EventArgs> UpHandler = (_, _) => { };
 
     /// <summary>
-    /// handler of down arrow.
+    /// Handler of down arrow.
     /// </summary>
     public event EventHandler<EventArgs> DownHandler = (_, _) => { };
 
     /// <summary>
-    /// handler of Esc.
+    /// Handler of Esc.
     /// </summary>
     public event EventHandler<EventArgs> EscapeHandler = (_, _) => { };
 
+    /// <summary>
+    /// Reading keys for character movement.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">There are exceptions for the case when the player pressed the wrong button.</exception>
     public void Run()
     {
         var isRunning = true;

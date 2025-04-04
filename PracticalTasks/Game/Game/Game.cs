@@ -5,13 +5,13 @@
 namespace Game;
 
 /// <summary>
-/// realization of game.
+/// Realization of game.
 /// </summary>
 public class Game
 {
     private const int Width = 40;
     private const int Height = 12;
-    private const string MapFilePath = "/home/ivan/Practice/programming-2nd-semester/PracticalTasks/Game/Game/Map.txt";
+    private const string MapFilePath = "../../../Map.txt";
     private readonly char[][] map = new char[Height][];
 
     private (int X, int Y) position;
@@ -36,11 +36,11 @@ public class Game
     }
 
     /// <summary>
-    /// move left.
+    /// Handles the player's movement to the left when the left arrow key is pressed.
     /// </summary>
-    /// <param name="sender">sender.</param>
-    /// <param name="args">arguments.</param>
-    public void OnLeft(object sender, EventArgs args)
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="args">Event arguments.</param>
+    public void OnLeft(object? sender, EventArgs args)
     {
         if (this.position.X <= 0 || this.map[this.position.Y][this.position.X - 1] == '#')
         {
@@ -57,11 +57,11 @@ public class Game
     }
 
     /// <summary>
-    /// move right.
+    /// Handles the player's movement to the right when the right arrow key is pressed.
     /// </summary>
-    /// <param name="sender">sender.</param>
-    /// <param name="args">arguments.</param>
-    public void OnRight(object sender, EventArgs args)
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="args">Event arguments.</param>
+    public void OnRight(object? sender, EventArgs args)
     {
         if (this.position.X >= Width - 1 || this.map[this.position.Y][this.position.X + 1] == '#')
         {
@@ -77,11 +77,11 @@ public class Game
     }
 
     /// <summary>
-    /// move up.
+    /// Controls the player's movement up when pressing the up arrow key.
     /// </summary>
-    /// <param name="sender">sender.</param>
-    /// <param name="args">arguments.</param>
-    public void OnUp(object sender, EventArgs args)
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="args">Event arguments.</param>
+    public void OnUp(object? sender, EventArgs args)
     {
         if (this.position.Y <= 0 || this.map[this.position.Y - 1][this.position.X] == '#')
         {
@@ -97,11 +97,11 @@ public class Game
     }
 
     /// <summary>
-    /// move down.
+    /// Controls the player's movement down when pressing the down arrow key.
     /// </summary>
-    /// <param name="sender">sender.</param>
-    /// <param name="args">arguments.</param>
-    public void OnDown(object sender, EventArgs args)
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="args">Event arguments.</param>
+    public void OnDown(object? sender, EventArgs args)
     {
         if (this.position.Y >= Height - 1 || this.map[this.position.Y + 1][this.position.X] == '#')
         {
@@ -117,11 +117,11 @@ public class Game
     }
 
     /// <summary>
-    /// exit from the game.
+    /// Exit from the game.
     /// </summary>
-    /// <param name="sender">sender.</param>
-    /// <param name="args">arguments.</param>
-    public void End(object sender, EventArgs args)
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="args">Event arguments.</param>
+    public void End(object? sender, EventArgs args)
     {
         Console.SetCursorPosition(Width, Height + 2);
         Console.CursorVisible = true;
