@@ -57,4 +57,18 @@ public class ParsingTreeTests
             Assert.That(root.Right!.Left!.Value, Is.EqualTo("7"));
         });
     }
+
+    /// <summary>
+    /// Create should throw an exception for incorrect parenthesis placement.
+    /// </summary>
+    [Test]
+    public void Create_ShouldThrowAnExceptionForIncorrectParenthesisPlacement()
+    {
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create(") 2 + 3"));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 + 3("));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 + ) 3"));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2( + 3"));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("((2) + 3"));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 + ))3"));
+    }
 }

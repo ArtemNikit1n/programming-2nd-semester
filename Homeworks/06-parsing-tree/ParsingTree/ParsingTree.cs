@@ -89,9 +89,12 @@ public static class ParsingTree
         List<string> tokens = [];
         var currentNumber = new StringBuilder();
         var inNumber = false;
+        var bracketBalance = 0;
 
-        foreach (var symbol in input)
+        for (var i = 0; i < input.Length; ++i)
         {
+            var symbol = input[i];
+
             if (char.IsWhiteSpace(symbol))
             {
                 if (inNumber)
@@ -115,7 +118,12 @@ public static class ParsingTree
                         inNumber = false;
                     }
 
-                    if (IsOperator(tokens.Last()))
+                    if (tokens.Count > 0 && IsOperator(tokens.Last()))
+                    {
+                        currentNumber.Append(symbol);
+                        inNumber = true;
+                    }
+                    else if (tokens.Count == 0 || tokens.Last() == "(")
                     {
                         currentNumber.Append(symbol);
                         inNumber = true;
@@ -131,22 +139,94 @@ public static class ParsingTree
                     inNumber = true;
                 }
             }
-            else if (symbol == '(' || symbol == ')' || IsOperator(symbol))
+            else
             {
-                if (inNumber)
+                switch (symbol)
+            {
+                case '(':
                 {
-                    tokens.Add(currentNumber.ToString());
-                    currentNumber.Clear();
+                    ++bracketBalance;
+                    if (inNumber)
+                    {
+                        throw new ArgumentException($"Number cannot be directly before '(' at position {i}.");
+                    }
+
+                    if (tokens.Count > 0 && !IsOperator(tokens.Last()) && tokens.Last() != "(")
+                    {
+                        throw new ArgumentException($"Missing operator before '(' at position {i}.");
+                    }
+
+                    tokens.Add(symbol.ToString());
                     inNumber = false;
+                    break;
                 }
 
-                tokens.Add(symbol.ToString());
+                case ')':
+                {
+                    bracketBalance--;
+                    if (bracketBalance < 0)
+                    {
+                        throw new ArgumentException($"Unmatched ')' at position {i}.");
+                    }
+
+                    if (inNumber)
+                    {
+                        tokens.Add(currentNumber.ToString());
+                        currentNumber.Clear();
+                        inNumber = false;
+                    }
+
+                    if (tokens.Count == 0 || IsOperator(tokens.Last()))
+                    {
+                        throw new ArgumentException($"Invalid token before ')' at position {i}.");
+                    }
+
+                    tokens.Add(symbol.ToString());
+                    break;
+                }
+
+                default:
+                {
+                    if (IsOperator(symbol))
+                    {
+                        if (inNumber)
+                        {
+                            tokens.Add(currentNumber.ToString());
+                            currentNumber.Clear();
+                            inNumber = false;
+                        }
+
+                        if (tokens.Count == 0 || IsOperator(tokens.Last()) || tokens.Last() == "(")
+                        {
+                            throw new ArgumentException($"Invalid operator position at position {i}.");
+                        }
+
+                        tokens.Add(symbol.ToString());
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Invalid character '{symbol}' at position {i}.");
+                    }
+
+                    break;
+                }
             }
+            }
+        }
+
+        if (bracketBalance != 0)
+        {
+            throw new ArgumentException("Unmatched parentheses in expression.");
         }
 
         if (inNumber)
         {
             tokens.Add(currentNumber.ToString());
+        }
+
+        if (IsOperator(tokens.Last()))
+        {
+            throw new ArgumentException("Expression cannot end with an operator.");
         }
 
         return tokens;
