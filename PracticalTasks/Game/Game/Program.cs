@@ -2,9 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-
-
-var eventLoop = new EventLoop();
+var eventLoop = new Game.EventLoop();
 var game = new Game.Game();
 
 eventLoop.LeftHandler += game.OnLeft;
