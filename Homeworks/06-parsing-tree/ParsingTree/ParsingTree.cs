@@ -18,6 +18,11 @@ public static class ParsingTree
     /// <returns>The root of the parsing tree.</returns>
     public static Node Create(string input)
     {
+        if (string.IsNullOrEmpty(input))
+        {
+            throw new ArgumentException("Input string cannot be null or empty");
+        }
+
         var tokens = ParseInputString(input);
         Stack<string> operators = new();
         Stack<Node> operands = new();

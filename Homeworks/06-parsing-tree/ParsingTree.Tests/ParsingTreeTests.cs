@@ -62,7 +62,7 @@ public class ParsingTreeTests
     /// Create should throw an exception for incorrect parenthesis placement.
     /// </summary>
     [Test]
-    public void Create_ShouldThrowAnExceptionForIncorrectParenthesisPlacement()
+    public void Create_ShouldThrowExceptionForIncorrectParenthesisPlacement()
     {
         Assert.Throws<ArgumentException>(() => ParsingTree.Create(") 2 + 3"));
         Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 + 3("));
@@ -70,5 +70,27 @@ public class ParsingTreeTests
         Assert.Throws<ArgumentException>(() => ParsingTree.Create("2( + 3"));
         Assert.Throws<ArgumentException>(() => ParsingTree.Create("((2) + 3"));
         Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 + ))3"));
+    }
+
+    /// <summary>
+    /// Create should throw an exception for two operators in a row.
+    /// </summary>
+    [Test]
+    public void Create_ShouldThrowExceptionForTwoOperatorsInRow()
+    {
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 ** 3"));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 * / 3"));
+    }
+
+    /// <summary>
+    /// Create should throw an exception for unknown symbol.
+    /// </summary>
+    [Test]
+    public void Create_ShouldThrowExceptionForUnknownSymbol()
+    {
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2ad 3"));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("gfd"));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("/n"));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 + 3 tr"));
     }
 }
