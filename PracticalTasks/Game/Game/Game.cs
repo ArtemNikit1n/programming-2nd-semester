@@ -4,11 +4,14 @@
 
 namespace Game;
 
+/// <summary>
+/// realization of game.
+/// </summary>
 public class Game
 {
     private const int Width = 40;
     private const int Height = 12;
-    private const string MapFilePath = "../../../Map.txt";
+    private const string MapFilePath = "/home/ivan/Practice/programming-2nd-semester/PracticalTasks/Game/Game/Map.txt";
     private readonly char[][] map = new char[Height][];
 
     private (int X, int Y) position;
@@ -32,6 +35,11 @@ public class Game
         Console.Write("@");
     }
 
+    /// <summary>
+    /// move left.
+    /// </summary>
+    /// <param name="sender">sender.</param>
+    /// <param name="args">arguments.</param>
     public void OnLeft(object sender, EventArgs args)
     {
         if (this.position.X <= 0 || this.map[this.position.Y][this.position.X - 1] == '#')
@@ -48,6 +56,11 @@ public class Game
         Console.Write("@");
     }
 
+    /// <summary>
+    /// move right.
+    /// </summary>
+    /// <param name="sender">sender.</param>
+    /// <param name="args">arguments.</param>
     public void OnRight(object sender, EventArgs args)
     {
         if (this.position.X >= Width - 1 || this.map[this.position.Y][this.position.X + 1] == '#')
@@ -63,6 +76,11 @@ public class Game
         Console.Write("@");
     }
 
+    /// <summary>
+    /// move up.
+    /// </summary>
+    /// <param name="sender">sender.</param>
+    /// <param name="args">arguments.</param>
     public void OnUp(object sender, EventArgs args)
     {
         if (this.position.Y <= 0 || this.map[this.position.Y - 1][this.position.X] == '#')
@@ -78,6 +96,11 @@ public class Game
         Console.Write("@");
     }
 
+    /// <summary>
+    /// move down.
+    /// </summary>
+    /// <param name="sender">sender.</param>
+    /// <param name="args">arguments.</param>
     public void OnDown(object sender, EventArgs args)
     {
         if (this.position.Y >= Height - 1 || this.map[this.position.Y + 1][this.position.X] == '#')
@@ -93,6 +116,11 @@ public class Game
         Console.Write("@");
     }
 
+    /// <summary>
+    /// exit from the game.
+    /// </summary>
+    /// <param name="sender">sender.</param>
+    /// <param name="args">arguments.</param>
     public void End(object sender, EventArgs args)
     {
         Console.SetCursorPosition(Width, Height + 2);

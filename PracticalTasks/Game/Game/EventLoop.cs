@@ -4,16 +4,34 @@
 
 namespace Game;
 
+/// <summary>
+/// event loop.
+/// </summary>
 public class EventLoop
 {
+    /// <summary>
+    /// handler of left arrow.
+    /// </summary>
     public event EventHandler<EventArgs> LeftHandler = (_, _) => { };
 
+    /// <summary>
+    /// handler of right arrow.
+    /// </summary>
     public event EventHandler<EventArgs> RightHandler = (_, _) => { };
 
+    /// <summary>
+    /// handler of up arrow.
+    /// </summary>
     public event EventHandler<EventArgs> UpHandler = (_, _) => { };
 
+    /// <summary>
+    /// handler of down arrow.
+    /// </summary>
     public event EventHandler<EventArgs> DownHandler = (_, _) => { };
 
+    /// <summary>
+    /// handler of Esc.
+    /// </summary>
     public event EventHandler<EventArgs> EscapeHandler = (_, _) => { };
 
     public void Run()
