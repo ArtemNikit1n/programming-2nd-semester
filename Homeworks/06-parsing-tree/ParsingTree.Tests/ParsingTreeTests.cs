@@ -93,4 +93,15 @@ public class ParsingTreeTests
         Assert.Throws<ArgumentException>(() => ParsingTree.Create("/n"));
         Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 + 3 tr"));
     }
+
+    /// <summary>
+    /// Create should throw an exception for two operand in a row.
+    /// </summary>
+    [Test]
+    public void Create_ShouldThrowAnExceptionForTwoOperandInRow()
+    {
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 3"));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("(2) 3"));
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("(2 + 2) - 3 * (2) 3"));
+    }
 }

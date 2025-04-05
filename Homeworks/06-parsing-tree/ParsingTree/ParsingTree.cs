@@ -50,20 +50,21 @@ public static class ParsingTree
 
                         operators.Pop();
                         break;
-                }
+                    default:
+                        if (!IsOperator(token))
+                        {
+                            continue;
+                        }
 
-                if (!IsOperator(token))
-                {
-                    continue;
-                }
+                        while (operators.Count > 0 && !IsPriorityOfFirstOperatorLower(operators.Peek(), token) && IsOperator(operators.Peek()))
+                        {
+                            var currentOperator = operators.Pop();
+                            BuildSubtree(currentOperator, operands);
+                        }
 
-                while (operators.Count > 0 && !IsPriorityOfFirstOperatorLower(operators.Peek(), token) && IsOperator(operators.Peek()))
-                {
-                    var currentOperator = operators.Pop();
-                    BuildSubtree(currentOperator, operands);
+                        operators.Push(token);
+                        break;
                 }
-
-                operators.Push(token);
             }
         }
 
@@ -73,11 +74,21 @@ public static class ParsingTree
             BuildSubtree(currentOperator, operands);
         }
 
+        if (operands.Count != 1)
+        {
+            throw new ArgumentException("Invalid expression structure - check for missing operators or extra operands");
+        }
+
         return operands.Pop();
     }
 
     private static void BuildSubtree(string currentOperator, Stack<Node> operands)
     {
+        if (operands.Count < 2)
+        {
+            throw new ArgumentException($"Not enough operands for operator '{currentOperator}'");
+        }
+
         var rightOperand = operands.Pop();
         var leftOperand = operands.Pop();
 
