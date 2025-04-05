@@ -1,3 +1,7 @@
+// <copyright file="Calculator.cs" company="ArtemNikit1n">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace ParsingTree;
 
 /// <summary>

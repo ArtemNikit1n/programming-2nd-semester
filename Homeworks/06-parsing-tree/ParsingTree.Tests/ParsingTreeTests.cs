@@ -30,7 +30,7 @@ public class ParsingTreeTests
     [Test]
     public void Create_ShouldCreateValidTreeForNegativeOperands()
     {
-        var root = ParsingTree.Create("-1 * -3");
+        var root = ParsingTree.Create("-1 * - 3");
         Assert.Multiple(() =>
         {
             Assert.That(root.Value, Is.EqualTo("*"));
@@ -78,8 +78,8 @@ public class ParsingTreeTests
     [Test]
     public void Create_ShouldThrowExceptionForTwoOperatorsInRow()
     {
+        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 * - - 3"));
         Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 ** 3"));
-        Assert.Throws<ArgumentException>(() => ParsingTree.Create("2 * / 3"));
     }
 
     /// <summary>
