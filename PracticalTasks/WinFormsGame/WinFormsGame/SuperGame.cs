@@ -9,14 +9,19 @@ namespace WinFormsGame;
 /// </summary>
 public partial class SuperGame : Form
 {
-    private static readonly int mapLength = 28;
-    private static readonly int mapWidth = 28;
+    private static readonly int MapLength = 28;
+    private static readonly int MapWidth = 28;
     private Image? playerImage;
     private int playerX = 1;
     private int playerY = 1;
     private int tileSize = 30;
-    private int[,] map = new int[mapLength, mapWidth];
+    private int[,] map = new int[MapLength, MapWidth];
     private string mapPath = "../../../Map.txt";
+
+    private Button? buttonUp;
+    private Button? buttonDown;
+    private Button? buttonLeft;
+    private Button? buttonRight;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SuperGame"/> class.
@@ -27,6 +32,7 @@ public partial class SuperGame : Form
         this.UploadMap();
         this.InitializeComponent();
         this.RemoveAbilityResizeWindow();
+        this.CreateMovementButtons();
 
         this.Paint += this.DrawMap;
         this.Paint += this.DrawPlayer;
@@ -38,7 +44,7 @@ public partial class SuperGame : Form
         this.FormBorderStyle = FormBorderStyle.FixedSingle;
         this.MaximizeBox = false;
         this.MinimizeBox = false;
-        this.ClientSize = new Size(mapLength * this.tileSize, mapWidth * this.tileSize);
+        this.ClientSize = new Size(MapLength * this.tileSize, MapWidth * this.tileSize);
     }
 
     private void UploadMap()
@@ -114,11 +120,20 @@ public partial class SuperGame : Form
         var newX = this.playerX + x;
         var newY = this.playerY + y;
 
-        if (newX < 0 || newX >= this.map.GetLength(1) ||
-            newY < 0 || newY >= this.map.GetLength(0) ||
-            this.map[newY, newX] == 1)
+        for (var py = 0; py < 3; py++)
         {
-            return;
+            for (var px = 0; px < 3; px++)
+            {
+                var checkX = newX + px;
+                var checkY = newY + py;
+
+                if (checkX >= this.map.GetLength(1) ||
+                    checkY >= this.map.GetLength(0) ||
+                    this.map[checkY, checkX] == 1)
+                {
+                    return;
+                }
+            }
         }
 
         this.playerX = newX;
@@ -141,6 +156,67 @@ public partial class SuperGame : Form
             case Keys.D: this.MovePlayer(1, 0);  break;
             default:
                 return;
+        }
+    }
+
+    private void CreateMovementButtons()
+    {
+        var buttonSize = this.tileSize;
+        var startX = this.ClientSize.Width - (buttonSize * 3);
+        var startY = this.ClientSize.Height - buttonSize;
+
+        this.buttonUp = new Button
+        {
+            Text = "↑",
+            Location = new Point(startX + buttonSize, startY - buttonSize),
+        };
+
+        this.buttonDown = new Button
+        {
+            Text = "↓",
+            Location = new Point(startX + buttonSize, startY),
+        };
+
+        this.buttonLeft = new Button
+        {
+            Text = "←",
+            Location = new Point(startX, startY),
+        };
+
+        this.buttonRight = new Button
+        {
+            Text = "→",
+            Location = new Point(startX + (buttonSize * 2), startY),
+        };
+
+        StyleButton(this.buttonUp);
+        StyleButton(this.buttonDown);
+        StyleButton(this.buttonLeft);
+        StyleButton(this.buttonRight);
+
+        this.Controls.Add(this.buttonUp);
+        this.Controls.Add(this.buttonDown);
+        this.Controls.Add(this.buttonLeft);
+        this.Controls.Add(this.buttonRight);
+
+        this.buttonUp.Click += (s, e) => this.MovePlayer(0, -1);
+        this.buttonDown.Click += (s, e) => this.MovePlayer(0, 1);
+        this.buttonLeft.Click += (s, e) => this.MovePlayer(-1, 0);
+        this.buttonRight.Click += (s, e) => this.MovePlayer(1, 0);
+        return;
+
+        void StyleButton(Button? button)
+        {
+            if (button == null)
+            {
+                return;
+            }
+
+            button.Size = new Size(buttonSize, buttonSize);
+            button.Font = new Font("Arial", 12, FontStyle.Bold);
+            button.BackColor = Color.LightGray;
+            button.FlatAppearance.BorderSize = 0;
+            button.TabStop = false;
         }
     }
 }
