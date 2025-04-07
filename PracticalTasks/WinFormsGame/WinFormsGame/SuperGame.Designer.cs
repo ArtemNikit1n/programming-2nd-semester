@@ -31,13 +31,15 @@ partial class SuperGame
     {
         SuspendLayout();
         // 
-        // Form1
+        // SuperGame
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         BackColor = System.Drawing.SystemColors.Control;
-        ClientSize = new System.Drawing.Size(1097, 844);
+        ClientSize = new System.Drawing.Size(840, 840);
         Location = new System.Drawing.Point(15, 15);
+        MaximumSize = new System.Drawing.Size(840 + 16, 840 + 39);
+        MinimumSize = new System.Drawing.Size(840, 840);
         Text = "SuperGame";
         ResumeLayout(false);
     }
