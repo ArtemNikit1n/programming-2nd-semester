@@ -7,7 +7,7 @@ namespace WinFormsGame;
 /// <summary>
 /// The form for the game.
 /// </summary>
-public partial class SuperGame : Form
+public sealed partial class SuperGame : Form
 {
     private static readonly int MapLength = 28;
     private static readonly int MapWidth = 28;
@@ -28,6 +28,7 @@ public partial class SuperGame : Form
     /// </summary>
     public SuperGame()
     {
+        this.DoubleBuffered = true;
         this.UploadPlayer();
         this.UploadMap();
         this.InitializeComponent();
@@ -199,10 +200,10 @@ public partial class SuperGame : Form
         this.Controls.Add(this.buttonLeft);
         this.Controls.Add(this.buttonRight);
 
-        this.buttonUp.Click += (s, e) => this.MovePlayer(0, -1);
-        this.buttonDown.Click += (s, e) => this.MovePlayer(0, 1);
-        this.buttonLeft.Click += (s, e) => this.MovePlayer(-1, 0);
-        this.buttonRight.Click += (s, e) => this.MovePlayer(1, 0);
+        this.buttonUp.Click += (_, _) => this.MovePlayer(0, -1);
+        this.buttonDown.Click += (_, _) => this.MovePlayer(0, 1);
+        this.buttonLeft.Click += (_, _) => this.MovePlayer(-1, 0);
+        this.buttonRight.Click += (_, _) => this.MovePlayer(1, 0);
         return;
 
         void StyleButton(Button? button)

@@ -1,6 +1,6 @@
 ﻿namespace WinFormsGame;
 
-partial class SuperGame
+sealed partial class SuperGame
 {
     /// <summary>
     ///  Required designer variable.
