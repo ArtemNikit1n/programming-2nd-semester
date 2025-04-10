@@ -16,7 +16,7 @@ public sealed partial class SuperGame : Form
     private int playerY = 1;
     private int tileSize = 30;
     private int[,] map = new int[MapLength, MapWidth];
-    private string mapPath = "../../../Map.txt";
+    private string mapPath = Path.Combine(AppContext.BaseDirectory, "Map.txt");
 
     private Button? buttonUp;
     private Button? buttonDown;
@@ -73,7 +73,7 @@ public sealed partial class SuperGame : Form
     {
         try
         {
-            this.playerImage = Image.FromFile("../../../KotoPlayer.png");
+            this.playerImage = Image.FromFile(Path.Combine(AppContext.BaseDirectory, "KotoPlayer.png"));
         }
         catch
         {

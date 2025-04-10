@@ -15,4 +15,15 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="KotoPlayer.png" />
+      <Content Include="KotoPlayer.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Map.txt" />
+      <Content Include="Map.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
