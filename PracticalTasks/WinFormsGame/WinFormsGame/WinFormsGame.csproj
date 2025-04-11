@@ -24,6 +24,11 @@
       <Content Include="Map.txt">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <None Remove="MobImage.png" />
+      <None Remove="Mob.png" />
+      <Content Include="Mob.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>
