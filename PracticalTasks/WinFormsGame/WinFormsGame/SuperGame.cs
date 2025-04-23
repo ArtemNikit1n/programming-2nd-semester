@@ -12,8 +12,11 @@ public sealed partial class SuperGame : Form
     private const int MapLength = 28;
     private const int MapWidth = 28;
     private Image? playerImage;
+    private Image? mobImage;
     private int playerX = 1;
     private int playerY = 1;
+    private int mobX = 10;
+    private int mobY = 10;
     private int tileSize = 30;
     private int[,] map = new int[MapLength, MapWidth];
     private string mapPath = Path.Combine(AppContext.BaseDirectory, "Map.txt");
@@ -30,13 +33,82 @@ public sealed partial class SuperGame : Form
     {
         this.DoubleBuffered = true;
         this.UploadPlayer();
+        this.UploadMob();
         this.UploadMap();
         this.InitializeComponent();
         this.RemoveAbilityResizeWindow();
 
         this.Paint += this.DrawMap;
         this.Paint += this.DrawPlayer;
+        this.Paint += this.DrawMob;
         this.KeyDown += this.ReadWasdForMovementPlayer;
+    }
+
+    private void DrawMob(object? sender, PaintEventArgs e)
+    {
+        if (sender == null || this.mobImage == null)
+        {
+            return;
+        }
+
+        e.Graphics.DrawImage(
+            this.mobImage,
+            this.mobX * this.tileSize,
+            this.mobY * this.tileSize,
+            this.tileSize * 4,
+            this.tileSize * 4);
+    }
+
+    private void UploadMob()
+    {
+        try
+        {
+            this.mobImage = Image.FromFile(Path.Combine(AppContext.BaseDirectory, "Mob.png"));
+        }
+        catch
+        {
+            this.mobImage = new Bitmap(this.tileSize, this.tileSize);
+            using var g = Graphics.FromImage(this.mobImage);
+            g.FillEllipse(Brushes.DarkBlue, 0, 0, this.tileSize, this.tileSize);
+        }
+    }
+
+    private void MoveMob()
+    {
+        var random = new Random();
+        for (var i = 0; i < 2; i++)
+        {
+            var direction = random.Next(0, 4);
+            var newMobX = this.mobX;
+            var newMobY = this.mobY;
+
+            switch (direction)
+            {
+                case 0: newMobY--; break;
+                case 1: newMobX++; break;
+                case 2: newMobY++; break;
+                case 3: newMobX--; break;
+            }
+
+            for (var py = 0; py < 4; py++)
+            {
+                for (var px = 0; px < 4; px++)
+                {
+                    var checkX = newMobX + px;
+                    var checkY = newMobY + py;
+
+                    if (checkX >= this.map.GetLength(1) ||
+                        checkY >= this.map.GetLength(0) ||
+                        this.map[checkY, checkX] == 1)
+                    {
+                        return;
+                    }
+
+                    this.mobX = newMobX;
+                    this.mobY = newMobY;
+                }
+            }
+        }
     }
 
     private void RemoveAbilityResizeWindow()
@@ -138,6 +210,9 @@ public sealed partial class SuperGame : Form
 
         this.playerX = newX;
         this.playerY = newY;
+
+        this.MoveMob();
+
         this.Invalidate();
     }
 
