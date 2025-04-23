@@ -28,7 +28,6 @@ public sealed partial class SuperGame : Form
     /// </summary>
     public SuperGame()
     {
-        this.AutoScaleMode = AutoScaleMode.None;
         this.DoubleBuffered = true;
         this.UploadPlayer();
         this.UploadMap();
