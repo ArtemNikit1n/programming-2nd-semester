@@ -13,10 +13,10 @@ public enum CalculatorState
     /// <summary>
     /// The calculator is waiting for the operator input.
     /// </summary>
-    OperatorIsExpected,
+    Operator,
 
     /// <summary>
     /// The calculator is waiting for the input of the second operand.
     /// </summary>
-    SecondOperandIsExpected,
+    SecondOperand,
 }

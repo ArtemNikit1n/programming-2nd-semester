@@ -14,12 +14,23 @@ public class CalculatorEngine
     private int firstOperand;
     private int secondOperand;
     private OperationType currentOperation = OperationType.EmptyOperation;
+    private string currentInput = string.Empty;
+
+    /// <summary>
+    /// An event notifying that something needs to be cleared on the display.
+    /// </summary>
+    public event EventHandler? DisplayChanged;
 
     /// <summary>
     /// Gets the value to display on the screen.
     /// </summary>
     public string DisplayValue { get; private set; } = "0";
 
+    /// <summary>
+    /// A finite state machine that simulates the behavior of a calculator.
+    /// </summary>
+    /// <param name="input">The entered elementary unit for calculation.</param>
+    /// <exception cref="UnknownCalculatorStatusException">The exception is for an unknown calculator condition.</exception>
     public void ProcessInput(string input)
     {
         switch (this.currentState)
@@ -27,10 +38,10 @@ public class CalculatorEngine
             case CalculatorState.FirstOperand:
                 this.HandleFirstNumber(input);
                 break;
-            case CalculatorState.OperatorIsExpected:
-                this.HandleOperatorEntered(input);
+            case CalculatorState.Operator:
+                this.HandleOperatorIsExpected(input);
                 break;
-            case CalculatorState.SecondOperandIsExpected:
+            case CalculatorState.SecondOperand:
                 this.HandleSecondNumber(input);
                 break;
             default:
@@ -38,32 +49,160 @@ public class CalculatorEngine
         }
     }
 
-    private void HandleFirstNumber(string input)
+    /// <summary>
+    /// Handles special user input (clearing characters)
+    /// </summary>
+    /// <param name="input">Special character.</param>
+    public void ProcessSpecialInput(string input)
     {
-        if (int.TryParse(input, out var inputNumber))
+        switch (input)
         {
-            this.DisplayValue = input;
+            case "C":
+                this.Clear();
+                break;
+            case "CE":
+                this.currentInput = string.Empty;
+                this.DisplayValue = this.currentState == CalculatorState.FirstOperand ? "0" :
+                    $"{this.firstOperand} {ToChar(this.currentOperation)} ";
+                break;
+            case "⌫":
+                if (this.currentInput.Length > 0)
+                {
+                    this.currentInput = this.currentInput[..^1];
+                    this.DisplayValue = this.currentState == CalculatorState.FirstOperand ? this.currentInput :
+                        $"{this.firstOperand} {ToChar(this.currentOperation)} {this.currentInput}";
+                }
+
+                break;
+            case "+/-":
+                if (this.currentInput.Length == 0)
+                {
+                    return;
+                }
+
+                this.currentInput = this.currentInput.StartsWith('-') ? this.currentInput[1..] : $"-{this.currentInput}";
+                this.DisplayValue = this.currentState == CalculatorState.FirstOperand ? this.currentInput :
+                    $"{this.firstOperand} {ToChar(this.currentOperation)} {this.currentInput}";
+                break;
         }
 
-        this.firstOperand = inputNumber;
-        this.currentState = CalculatorState.OperatorIsExpected;
+        this.OnDisplayChanged();
     }
 
-    private void HandleOperatorEntered(string input)
+    private static OperationType ParseOperation(string input)
+        => input switch
+        {
+            "+" => OperationType.Add,
+            "-" => OperationType.Subtract,
+            "*" => OperationType.Multiply,
+            "/" => OperationType.Divide,
+            _ => OperationType.EmptyOperation,
+        };
+
+    private static bool IsOperation(string input)
+        => input is "+" or "-" or "*" or "/";
+
+    private static char ToChar(OperationType operation)
+        => operation switch
+        {
+            OperationType.Add => '+',
+            OperationType.Subtract => '-',
+            OperationType.Multiply => '*',
+            OperationType.Divide => '/',
+            OperationType.EmptyOperation => '\0',
+            _ => throw new UnknownOperationException(),
+        };
+
+
+    private void HandleFirstNumber(string input)
     {
-        this.currentOperation = (OperationType)input[0];
-        this.DisplayValue += input;
-        this.currentState = CalculatorState.SecondOperandIsExpected;
+        if (IsOperation(input))
+        {
+            if (!int.TryParse(this.currentInput, out this.firstOperand) && this.firstOperand != 0)
+            {
+                throw new UnknownOperandException();
+            }
+
+            this.DisplayValue = $"{this.firstOperand} {input} ";
+            this.currentOperation = ParseOperation(input);
+            this.currentState = CalculatorState.SecondOperand;
+            this.currentInput = string.Empty;
+        }
+
+        if (int.TryParse(input, out _))
+        {
+            this.currentInput += input;
+            this.DisplayValue = $"{this.currentInput} ";
+        }
+        else
+        {
+            this.ProcessSpecialInput(input);
+        }
+    }
+
+    private void HandleOperatorIsExpected(string input)
+    {
+        if (!IsOperation(input))
+        {
+            return;
+        }
+
+        this.currentOperation = ParseOperation(input);
+        this.DisplayValue = $"{this.firstOperand} {input} ";
+        this.currentState = CalculatorState.SecondOperand;
     }
 
     private void HandleSecondNumber(string input)
     {
-        if (int.TryParse(input, out this.secondOperand))
+        if ((IsOperation(input) || input == "=") && this.currentInput.Length == 0)
         {
-            this.DisplayValue += input;
+            return;
         }
 
-        this.Calculate();
+        if (IsOperation(input) || input == "=")
+        {
+            if (!int.TryParse(this.currentInput, out this.secondOperand))
+            {
+                throw new UnknownOperandException();
+            }
+
+            try
+            {
+                this.Calculate();
+            }
+            catch (DivideByZeroException ex)
+            {
+                this.DisplayValue = $"{this.firstOperand} {ToChar(this.currentOperation)} ";
+                this.secondOperand = 0;
+                this.currentInput = string.Empty;
+                return;
+            }
+
+            if (IsOperation(input))
+            {
+                this.DisplayValue = $"{this.firstOperand} {input} ";
+                this.currentOperation = ParseOperation(input);
+                this.currentState = CalculatorState.SecondOperand;
+            }
+            else
+            {
+                this.DisplayValue = this.firstOperand.ToString();
+                this.currentOperation = OperationType.EmptyOperation;
+                this.currentState = CalculatorState.Operator;
+            }
+
+            this.currentInput = string.Empty;
+        }
+
+        if (int.TryParse(input, out _))
+        {
+            this.currentInput += input;
+            this.DisplayValue += input;
+        }
+        else
+        {
+            this.ProcessSpecialInput(input);
+        }
     }
 
     private void Calculate()
@@ -85,5 +224,20 @@ public class CalculatorEngine
             default:
                 throw new UnknownOperationException();
         }
+    }
+
+    private void Clear()
+    {
+        this.currentState = CalculatorState.FirstOperand;
+        this.firstOperand = 0;
+        this.secondOperand = 0;
+        this.currentOperation = OperationType.EmptyOperation;
+        this.currentInput = string.Empty;
+        this.DisplayValue = "0";
+    }
+
+    private void OnDisplayChanged()
+    {
+        this.DisplayChanged?.Invoke(this, EventArgs.Empty);
     }
 }

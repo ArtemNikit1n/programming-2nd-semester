@@ -16,13 +16,45 @@ public class CalculatorEngineTests
     }
 
     [Test]
-    public void ProcessInput_ShouldCorrectlyFillInDisplayValueFieldAfterCalculations()
+    public void ProcessInput_ShouldCorrectlyFillInDisplayValueFieldAfterTwoNormalCalculation()
     {
         this.calculatorEngine.ProcessInput("3");
         this.calculatorEngine.ProcessInput("+");
-        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("3+"));
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("3 + "));
         this.calculatorEngine.ProcessInput("10");
-        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("13"));
+        this.calculatorEngine.ProcessInput("-");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("13 - "));
+        this.calculatorEngine.ProcessInput("-");
+        this.calculatorEngine.ProcessInput("5");
+        this.calculatorEngine.ProcessInput("0");
+        this.calculatorEngine.ProcessInput("=");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("-37"));
+    }
+
+    [Test]
+    public void ProcessInput_ShouldCorrectlyFillInDisplayValueFieldAfterOneCalculationWithNegativeNumbers()
+    {
+        this.calculatorEngine.ProcessInput("-3");
+        this.calculatorEngine.ProcessInput("-");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("-3 - "));
+        this.calculatorEngine.ProcessInput("-10");
+        this.calculatorEngine.ProcessInput("=");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("7"));
+    }
+
+    [Test]
+    public void ProcessInput_ShouldCorrectlyFillInDisplayValueFieldAfterDivisionByZero()
+    {
+        this.calculatorEngine.ProcessInput("0");
+        this.calculatorEngine.ProcessInput("/");
+        this.calculatorEngine.ProcessInput("0");
+        this.calculatorEngine.ProcessInput("=");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("0 / "));
+        this.calculatorEngine.ProcessInput("-3");
+        this.calculatorEngine.ProcessInput("/");
+        this.calculatorEngine.ProcessInput("0");
+        this.calculatorEngine.ProcessInput("+");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("0 / "));
     }
 }
 #pragma warning restore SA1600
