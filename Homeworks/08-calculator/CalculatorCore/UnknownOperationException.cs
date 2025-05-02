@@ -1,4 +1,4 @@
-﻿// <copyright file="UnknownOperationException.cs" company="PlaceholderCompany">
+﻿// <copyright file="UnknownOperationException.cs" company="ArtemNikit1n">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 

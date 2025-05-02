@@ -1,4 +1,4 @@
-﻿// <copyright file="OperationType.cs" company="PlaceholderCompany">
+﻿// <copyright file="OperationType.cs" company="ArtemNikit1n">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 

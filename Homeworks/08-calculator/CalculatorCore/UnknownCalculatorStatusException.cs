@@ -1,4 +1,4 @@
-﻿// <copyright file="UnknownCalculatorStatusException.cs" company="PlaceholderCompany">
+﻿// <copyright file="UnknownCalculatorStatusException.cs" company="ArtemNikit1n">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
