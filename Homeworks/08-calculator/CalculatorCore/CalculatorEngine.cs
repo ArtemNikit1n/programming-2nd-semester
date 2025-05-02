@@ -50,7 +50,7 @@ public class CalculatorEngine
     }
 
     /// <summary>
-    /// Handles special user input (clearing characters)
+    /// Handles special user input (clearing characters).
     /// </summary>
     /// <param name="input">Special character.</param>
     public void ProcessSpecialInput(string input)
@@ -113,7 +113,6 @@ public class CalculatorEngine
             _ => throw new UnknownOperationException(),
         };
 
-
     private void HandleFirstNumber(string input)
     {
         if (IsOperation(input))
@@ -170,7 +169,7 @@ public class CalculatorEngine
             {
                 this.Calculate();
             }
-            catch (DivideByZeroException ex)
+            catch (DivideByZeroException)
             {
                 this.DisplayValue = $"{this.firstOperand} {ToChar(this.currentOperation)} ";
                 this.secondOperand = 0;

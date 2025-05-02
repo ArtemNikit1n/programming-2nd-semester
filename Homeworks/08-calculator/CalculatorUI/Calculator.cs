@@ -1,11 +1,21 @@
+// <copyright file="Calculator.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace CalculatorUI;
 
 using CalculatorCore;
 
+/// <summary>
+/// A calculator made by analogy with the calculator on Windows.
+/// </summary>
 public partial class Calculator : Form
 {
     private readonly CalculatorEngine calculator;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Calculator"/> class.
+    /// </summary>
     public Calculator()
     {
         this.InitializeComponent();

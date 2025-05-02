@@ -1,4 +1,8 @@
-﻿namespace CalculatorCore;
+﻿// <copyright file="OperationType.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace CalculatorCore;
 
 /// <summary>
 /// The type of operation for working with natural numbers.

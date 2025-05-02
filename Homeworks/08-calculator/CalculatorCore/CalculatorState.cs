@@ -1,4 +1,8 @@
-﻿namespace CalculatorCore;
+﻿// <copyright file="CalculatorState.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace CalculatorCore;
 
 /// <summary>
 /// The status of the calculator.
