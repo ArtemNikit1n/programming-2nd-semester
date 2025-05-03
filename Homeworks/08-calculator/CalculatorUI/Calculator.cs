@@ -20,10 +20,14 @@ public partial class Calculator : Form
     {
         this.InitializeComponent();
         this.calculator = new CalculatorEngine();
-        this.calculator.DisplayChanged += (_, _) => this.UpdateDisplay();
+        this.CalculatorScreen.DataBindings.Add(
+            "Text",
+            this.calculator,
+            nameof(this.calculator.DisplayValue),
+            false,
+            DataSourceUpdateMode.OnPropertyChanged);
 
         this.SetupEventHandlers();
-        this.UpdateDisplay();
     }
 
     private void SetupEventHandlers()
@@ -45,15 +49,10 @@ public partial class Calculator : Form
         this.Amount.Click += this.ButtonClick;
         this.Equality.Click += this.ButtonClick;
 
-        this.Clear.Click += this.SpecialButtonClick;
-        this.ClearElement.Click += this.SpecialButtonClick;
-        this.Backspase.Click += this.SpecialButtonClick;
-        this.ChangeSign.Click += this.SpecialButtonClick;
-    }
-
-    private void UpdateDisplay()
-    {
-        this.CalculatorScreen.Text = this.calculator.DisplayValue;
+        this.Clear.Click += this.ButtonClick;
+        this.ClearElement.Click += this.ButtonClick;
+        this.Backspase.Click += this.ButtonClick;
+        this.ChangeSign.Click += this.ButtonClick;
     }
 
     private void ButtonClick(object? sender, EventArgs e)
@@ -64,14 +63,5 @@ public partial class Calculator : Form
         }
 
         this.calculator.ProcessInput(button.Text);
-        this.UpdateDisplay();
-    }
-
-    private void SpecialButtonClick(object? sender, EventArgs e)
-    {
-        if (sender is Button button)
-        {
-            this.calculator.ProcessSpecialInput(button.Text);
-        }
     }
 }
