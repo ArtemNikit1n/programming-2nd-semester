@@ -56,5 +56,61 @@ public class CalculatorEngineTests
         this.calculatorEngine.ProcessInput("+");
         Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("0 / "));
     }
+
+    [Test]
+    public void ProcessInput_ShouldCorrectlyFillInDisplayValueAfterCompleteCleaning()
+    {
+        this.calculatorEngine.ProcessInput("30");
+        this.calculatorEngine.ProcessInput("+");
+        this.calculatorEngine.ProcessInput("10");
+        this.calculatorEngine.ProcessInput("C");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("0"));
+    }
+
+    [Test]
+    public void ProcessInput_ShouldCorrectlyFillInDisplayValueAfterClearingOneItem()
+    {
+        this.calculatorEngine.ProcessInput("-30");
+        this.calculatorEngine.ProcessInput("CE");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("0"));
+        this.calculatorEngine.ProcessInput("30");
+        this.calculatorEngine.ProcessInput("+");
+        this.calculatorEngine.ProcessInput("10");
+        this.calculatorEngine.ProcessInput("CE");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("30 + "));
+    }
+
+    [Test]
+    public void ProcessInput_ShouldCorrectlyFillInDisplayValueAfterClearingOneCharacter()
+    {
+        this.calculatorEngine.ProcessInput("-30");
+        this.calculatorEngine.ProcessInput("⌫");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("-3"));
+        this.calculatorEngine.ProcessInput("⌫");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("-"));
+        this.calculatorEngine.ProcessInput("⌫");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo(string.Empty));
+        this.calculatorEngine.ProcessInput("30");
+        this.calculatorEngine.ProcessInput("+");
+        this.calculatorEngine.ProcessInput("10");
+        this.calculatorEngine.ProcessInput("⌫");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("30 + 1"));
+    }
+
+    [Test]
+    public void ProcessInput_ShouldCorrectlyChangeSignOfNumber()
+    {
+        this.calculatorEngine.ProcessInput("-30");
+        this.calculatorEngine.ProcessInput("+/-");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("30"));
+        this.calculatorEngine.ProcessInput("+/-");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("-30"));
+        this.calculatorEngine.ProcessInput("+");
+        this.calculatorEngine.ProcessInput("5");
+        this.calculatorEngine.ProcessInput("+/-");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("-30 + -5"));
+        this.calculatorEngine.ProcessInput("+/-");
+        Assert.That(this.calculatorEngine.DisplayValue, Is.EqualTo("-30 + 5"));
+    }
 }
 #pragma warning restore SA1600
