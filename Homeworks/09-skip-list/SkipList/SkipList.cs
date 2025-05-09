@@ -313,7 +313,7 @@ public class SkipList<T> : IList<T>
 
     private class SkipListNode(T value, int level)
     {
-        public T Value { get; set; } = value;
+        public T Value { get; } = value;
 
         public SkipListNode?[] Next { get; set; } = new SkipListNode[level + 1];
 

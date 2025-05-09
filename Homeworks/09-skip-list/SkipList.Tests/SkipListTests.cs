@@ -32,6 +32,22 @@ public class SkipListTests
     }
 
     [Test]
+    public void Remove_ShouldRemoveOneItem()
+    {
+        this.listWithNonReferenceType.Add(1);
+        this.listWithNonReferenceType.Remove(1);
+        Assert.That(this.listWithNonReferenceType, Has.Count.EqualTo(0));
+    }
+
+    [Test]
+    public void Remove_ShouldRemoveOneItem_ReferenceType()
+    {
+        this.listWithReferenceType.Add("123");
+        this.listWithReferenceType.Remove("123");
+        Assert.That(this.listWithReferenceType, Has.Count.EqualTo(0));
+    }
+
+    [Test]
     public void Add_ShouldBeInsertedCorrectlyInMiddleOfList()
     {
         this.listWithNonReferenceType.Add(1);
