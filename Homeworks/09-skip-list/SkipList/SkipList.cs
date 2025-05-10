@@ -32,9 +32,14 @@ public class SkipList<T> : IList<T>
     {
         get
         {
+            if (this.IsReadOnly)
+            {
+                throw new NotSupportedException("Collection is read-only");
+            }
+
             if (index < 0 || index >= this.Count)
             {
-                throw new IndexOutOfRangeException("Valid range is [0, {this.Count - 1}]");
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
 
             var currentNode = this.head.Next[0];
@@ -118,6 +123,11 @@ public class SkipList<T> : IList<T>
     /// <inheritdoc/>
     public void Clear()
     {
+        if (this.IsReadOnly)
+        {
+            throw new NotSupportedException("Collection is read-only");
+        }
+
         this.head = new SkipListNode(default!, 0);
         this.maxLevel = 0;
         this.Count = 0;
@@ -155,6 +165,11 @@ public class SkipList<T> : IList<T>
     /// <inheritdoc/>
     public void CopyTo(T[] array, int arrayIndex)
     {
+        if (array is null)
+        {
+            throw new ArgumentNullException(nameof(array), "Array cannot be null");
+        }
+
         if (arrayIndex < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(arrayIndex), "Array index cannot be negative");
@@ -173,7 +188,7 @@ public class SkipList<T> : IList<T>
         var currentNode = this.head.Next[0];
         var i = arrayIndex;
 
-        while (currentNode!.Next[0] != null)
+        while (currentNode != null)
         {
             array[i++] = currentNode.Value;
             currentNode = currentNode.Next[0];
@@ -193,11 +208,12 @@ public class SkipList<T> : IList<T>
             throw new ArgumentNullException(nameof(item), "Item cannot be null");
         }
 
-        if (this.head.Next[0] is not null)
+        if (this.head.Next[0] is null)
         {
             return false;
         }
 
+        this.TryToExpandHead(this.maxLevel);
         var currentNode = this.head;
         SkipListNode? itemToDelete = null;
         var needToUpdate = new SkipListNode[this.maxLevel + 1];
@@ -222,7 +238,7 @@ public class SkipList<T> : IList<T>
             return false;
         }
 
-        for (var level = 0; level <= itemToDelete.Next.Length; level++)
+        for (var level = 0; level <= itemToDelete.Next.Length - 1; level++)
         {
             needToUpdate[level].Next[level] = itemToDelete.Next[level];
         }
@@ -251,13 +267,22 @@ public class SkipList<T> : IList<T>
         return -1;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// The operation is not supported due to the fact that the list must be sorted.
+    /// </summary>
+    /// <param name="index">Not supported.</param>
+    /// <param name="item">This element cannot be inserted.</param>
+    /// <exception cref="NotSupportedException">It is thrown in case of an attempt to use it.</exception>
     public void Insert(int index, T item)
     {
         throw new NotSupportedException();
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// The operation is not supported due to the fact that the list must be sorted.
+    /// </summary>
+    /// <param name="index">Not supported.</param>
+    /// <exception cref="NotSupportedException">It is thrown in case of an attempt to use it.</exception>
     public void RemoveAt(int index)
     {
         throw new NotSupportedException();
