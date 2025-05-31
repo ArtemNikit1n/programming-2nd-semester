@@ -1,4 +1,4 @@
-﻿// <copyright file="MapFilterFold.cs" company="ArtemNikit1n">
+﻿// <copyright file="MapFilterFold1.cs" company="ArtemNikit1n">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
