@@ -1,4 +1,4 @@
-// <copyright file="BWTTests.cs" company="PlaceholderCompany">
+// <copyright file="BWTTests.cs" company="ArtemNikit1n">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -18,7 +18,7 @@ public abstract class BWTTests
     /// </returns>
     public static bool RunTests()
     {
-        return TestDirectTransformation() && TestReverseTransformation();
+        return TestDirectTransformation() && TestReverseTransformation() && MakeSureThatReverseTransformFromForwardOneMatchesOriginalString();
     }
 
     private static bool TestDirectTransformation()
@@ -39,5 +39,11 @@ public abstract class BWTTests
         var longLineTest = BWT.InverseTransform("srclosiiinlmpsnsoiuauPoaonvcmcrincotciocoloeo", 0) == "Pneumonoultramicroscopicsilicovolcanoconiosis";
 
         return normalDataTest && shortLineTest && longLineTest && emptyDataTest;
+    }
+
+    private static bool MakeSureThatReverseTransformFromForwardOneMatchesOriginalString()
+    {
+        const string longLine = "Pneumonoultramicroscopicsilicovolcanoconiosis";
+        return BWT.InverseTransform(BWT.Transform(longLine)) == longLine;
     }
 }
