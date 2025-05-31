@@ -1,4 +1,4 @@
-// <copyright file="Trie.cs" company="PlaceholderCompany">
+// <copyright file="Trie.cs" company="ArtemNikit1n">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
