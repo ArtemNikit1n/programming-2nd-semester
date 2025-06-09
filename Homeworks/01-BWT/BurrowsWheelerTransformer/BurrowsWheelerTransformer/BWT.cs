@@ -70,7 +70,7 @@ public static class BWT
 
     private static Rotation GetLastColumn(Rotation[] rotations)
     {
-        var lastColumn = new StringBuilder(new string('\0', rotations.Length));
+        var lastColumn = new char[rotations.Length];
         var endPosition = 0;
 
         for (var i = 0; i < rotations.Length; ++i)
@@ -84,7 +84,7 @@ public static class BWT
             lastColumn[i] = rotation.Permutation[((rotation.EndPosition - 1) + rotations.Length) % rotations.Length];
         }
 
-        var resultingRotation = new Rotation(lastColumn.ToString(), endPosition);
+        var resultingRotation = new Rotation(lastColumn.ToString()!, endPosition);
 
         return resultingRotation;
     }
