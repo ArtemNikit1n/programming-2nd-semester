@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build-Ubuntu:
+  
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,7 +13,7 @@ jobs:
           dotnet-version: '9.x'
       - name: Build
         run: |
-          for solution in $(find . -name "*.sln"); do
+          for solution in $(find . -name "*.sln" ! -path "*WinForms*"); do
             dotnet build "$solution"
           done
       - name: Run tests
