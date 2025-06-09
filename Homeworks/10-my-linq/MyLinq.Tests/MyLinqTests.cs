@@ -14,61 +14,41 @@ public class MyLinqTests
 
     [Test]
     public void Take_ShouldReturnElementsUpTo2()
-    {
-        Assert.That(NormalSequence.Take(2), Is.EqualTo(new[] { 1, 2 }));
-    }
+        => Assert.That(NormalSequence.Take(2), Is.EqualTo(new[] { 1, 2 }));
 
     [Test]
     public void Take_ShouldNotReturnElementsForEmptySequence()
-    {
-        Assert.That(EmptySequence.Take(2), Is.EqualTo(EmptySequence));
-    }
+        => Assert.That(EmptySequence.Take(2), Is.EqualTo(EmptySequence));
 
     [Test]
     public void Take_ShouldReturnElementsUpTo2_ReferenceType()
-    {
-        Assert.That(NormalSequenceReferenceType.Take(2), Is.EqualTo(new[] { null, "22" }));
-    }
+        => Assert.That(NormalSequenceReferenceType.Take(2), Is.EqualTo(new[] { null, "22" }));
 
     [Test]
     public void Take_ThrowExceptionForNullSequence_ReferenceType()
-    {
-        Assert.Throws<ArgumentNullException>(() => { _ = NullSequenceReferenceType!.Take(2).ToList(); });
-    }
+        => Assert.Throws<ArgumentNullException>(() => { _ = NullSequenceReferenceType!.Take(2).ToList(); });
 
     [Test]
     public void Take_ThrowExceptionForNegativeIndex()
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = NormalSequence.Take(-2).ToList(); });
-    }
+        => Assert.Throws<ArgumentOutOfRangeException>(() => { _ = NormalSequence.Take(-2).ToList(); });
 
     [Test]
     public void Skip_ShouldReturnElementsUpTo2()
-    {
-        Assert.That(NormalSequence.Skip(2), Is.EqualTo(new[] { 3, 4 }));
-    }
+        => Assert.That(NormalSequence.Skip(2), Is.EqualTo(new[] { 3, 4 }));
 
     [Test]
     public void Skip_ShouldNotReturnElementsForEmptySequence()
-    {
-        Assert.That(EmptySequence.Skip(2), Is.EqualTo(EmptySequence));
-    }
+        => Assert.That(EmptySequence.Skip(2), Is.EqualTo(EmptySequence));
 
     [Test]
     public void Skip_ShouldReturnElementsUpTo2_ReferenceType()
-    {
-        Assert.That(NormalSequenceReferenceType.Skip(2), Is.EqualTo(new[] { "\0", "\n" }));
-    }
+        => Assert.That(NormalSequenceReferenceType.Skip(2), Is.EqualTo(new[] { "\0", "\n" }));
 
     [Test]
     public void Skip_ThrowExceptionForNullSequence_ReferenceType()
-    {
-        Assert.Throws<ArgumentNullException>(() => { _ = NullSequenceReferenceType!.Skip(2).ToList(); });
-    }
+        => Assert.Throws<ArgumentNullException>(() => { _ = NullSequenceReferenceType!.Skip(2).ToList(); });
 
     [Test]
     public void Skip_ThrowExceptionForNegativeIndex()
-    {
-        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = NormalSequence.Skip(-2).ToList(); });
-    }
+        => Assert.Throws<ArgumentOutOfRangeException>(() => { _ = NormalSequence.Skip(-2).ToList(); });
 }
