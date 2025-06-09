@@ -18,7 +18,7 @@ jobs:
           done
       - name: Run tests
         run: |
-          for solution in $(find . -name "*.sln"); do
+          for solution in $(find . -name "*.sln" ! -path "*WinForms*"); do
             dotnet test "$solution"
           done
   build-Windows:
