@@ -1,5 +1,5 @@
 ﻿// <copyright file="SkipList.cs" company="ArtemNikit1n">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+// Copyright (c) ArtemNikit1n. All rights reserved.
 // </copyright>
 
 namespace SkipList;
@@ -20,23 +20,19 @@ public class SkipList<T> : IList<T>
 
     private SkipListNode head = new(default!, 0);
     private int maxLevel;
+    private int version;
 
     /// <inheritdoc/>
     public int Count { get; private set; }
 
     /// <inheritdoc/>
-    public bool IsReadOnly { get; }
+    public bool IsReadOnly => false;
 
     /// <inheritdoc/>
     public T this[int index]
     {
         get
         {
-            if (this.IsReadOnly)
-            {
-                throw new NotSupportedException("Collection is read-only");
-            }
-
             if (index < 0 || index >= this.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
@@ -47,11 +43,21 @@ public class SkipList<T> : IList<T>
 
             while (currentIndex != index)
             {
-                currentNode = currentNode!.Next[0];
+                if (currentNode == null)
+                {
+                    throw new InvalidOperationException("Unexpected null node encountered.");
+                }
+
+                currentNode = currentNode.Next[0];
                 currentIndex++;
             }
 
-            return currentNode!.Value;
+            if (currentNode == null)
+            {
+                throw new InvalidOperationException("Unexpected null node encountered.");
+            }
+
+            return currentNode.Value;
         }
 
         set => throw new NotSupportedException();
@@ -60,9 +66,15 @@ public class SkipList<T> : IList<T>
     /// <inheritdoc/>
     public IEnumerator<T> GetEnumerator()
     {
+        var initialVersion = this.version;
         var currentNode = this.head.Next[0];
         while (currentNode != null)
         {
+            if (initialVersion != this.version)
+            {
+                throw new InvalidOperationException("Collection was modified during enumeration.");
+            }
+
             yield return currentNode.Value;
             currentNode = currentNode.Next[0];
         }
@@ -70,22 +82,12 @@ public class SkipList<T> : IList<T>
 
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator()
-    {
-        return this.GetEnumerator();
-    }
+        => this.GetEnumerator();
 
     /// <inheritdoc/>
     public void Add(T item)
     {
-        if (this.IsReadOnly)
-        {
-            throw new NotSupportedException("Collection is read-only");
-        }
-
-        if (item is null)
-        {
-            throw new ArgumentNullException(nameof(item), "Item cannot be null");
-        }
+        ArgumentNullException.ThrowIfNull(item);
 
         if (this.AddToEmptyList(item))
         {
@@ -103,9 +105,9 @@ public class SkipList<T> : IList<T>
 
         for (var level = newNodeLevel; level >= 0; level--)
         {
-            while (currentNode.Next[level] != null && currentNode.Next[level]!.Value.CompareTo(item) < 0)
+            while (currentNode.Next[level] is { } nextNode && nextNode.Value.CompareTo(item) < 0)
             {
-                currentNode = currentNode.Next[level]!;
+                currentNode = nextNode;
             }
 
             needToUpdate[level] = currentNode;
@@ -123,11 +125,7 @@ public class SkipList<T> : IList<T>
     /// <inheritdoc/>
     public void Clear()
     {
-        if (this.IsReadOnly)
-        {
-            throw new NotSupportedException("Collection is read-only");
-        }
-
+        this.version = 0;
         this.head = new SkipListNode(default!, 0);
         this.maxLevel = 0;
         this.Count = 0;
@@ -139,21 +137,18 @@ public class SkipList<T> : IList<T>
     /// <inheritdoc/>
     public bool Contains(T item)
     {
-        if (item is null)
-        {
-            throw new ArgumentNullException(nameof(item), "Item cannot be null");
-        }
+        ArgumentNullException.ThrowIfNull(item);
 
         var currentNode = this.head;
 
         for (var level = this.maxLevel; level >= 0; level--)
         {
-            while (currentNode.Next[level] != null && currentNode.Next[level]!.Value.CompareTo(item) < 0)
+            while (currentNode.Next[level] is { } nextNode && nextNode.Value.CompareTo(item) < 0)
             {
-                currentNode = currentNode.Next[level]!;
+                currentNode = nextNode;
             }
 
-            if (currentNode.Next[level] != null && currentNode.Next[level]!.Value.CompareTo(item) == 0)
+            if (currentNode.Next[level] is { } foundNode && foundNode.Value.CompareTo(item) == 0)
             {
                 return true;
             }
@@ -165,10 +160,7 @@ public class SkipList<T> : IList<T>
     /// <inheritdoc/>
     public void CopyTo(T[] array, int arrayIndex)
     {
-        if (array is null)
-        {
-            throw new ArgumentNullException(nameof(array), "Array cannot be null");
-        }
+        ArgumentNullException.ThrowIfNull(array);
 
         if (arrayIndex < 0)
         {
@@ -198,15 +190,7 @@ public class SkipList<T> : IList<T>
     /// <inheritdoc/>
     public bool Remove(T item)
     {
-        if (this.IsReadOnly)
-        {
-            throw new NotSupportedException("Collection is read-only");
-        }
-
-        if (item is null)
-        {
-            throw new ArgumentNullException(nameof(item), "Item cannot be null");
-        }
+        ArgumentNullException.ThrowIfNull(item);
 
         if (this.head.Next[0] is null)
         {
@@ -220,16 +204,16 @@ public class SkipList<T> : IList<T>
 
         for (var level = this.maxLevel; level >= 0; level--)
         {
-            while (currentNode.Next[level] != null && currentNode.Next[level]!.Value.CompareTo(item) < 0)
+            while (currentNode.Next[level] is { } nextNode && nextNode.Value.CompareTo(item) < 0)
             {
-                currentNode = currentNode.Next[level]!;
+                currentNode = nextNode;
             }
 
             needToUpdate[level] = currentNode;
 
-            if (currentNode.Next[level] != null && currentNode.Next[level]!.Value.CompareTo(item) == 0)
+            if (currentNode.Next[level] is { } potentialMatch && potentialMatch.Value.CompareTo(item) == 0)
             {
-                itemToDelete = currentNode.Next[level]!;
+                itemToDelete = potentialMatch;
             }
         }
 
@@ -244,12 +228,15 @@ public class SkipList<T> : IList<T>
         }
 
         this.Count--;
+        this.version++;
         return true;
     }
 
     /// <inheritdoc/>
     public int IndexOf(T item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+
         var currentNode = this.head.Next[0];
         var index = 0;
 
@@ -274,18 +261,56 @@ public class SkipList<T> : IList<T>
     /// <param name="item">This element cannot be inserted.</param>
     /// <exception cref="NotSupportedException">It is thrown in case of an attempt to use it.</exception>
     public void Insert(int index, T item)
-    {
-        throw new NotSupportedException();
-    }
+        => throw new NotSupportedException();
 
-    /// <summary>
-    /// The operation is not supported due to the fact that the list must be sorted.
-    /// </summary>
-    /// <param name="index">Not supported.</param>
-    /// <exception cref="NotSupportedException">It is thrown in case of an attempt to use it.</exception>
+    /// <inheritdoc/>
     public void RemoveAt(int index)
     {
-        throw new NotSupportedException();
+        if (index < 0 || index >= this.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
+        if (this.Count == 0)
+        {
+            throw new InvalidOperationException("List is empty");
+        }
+
+        this.TryToExpandHead(this.maxLevel);
+        var currentNode = this.head.Next[0];
+        var currentIndex = 0;
+        while (currentIndex < index)
+        {
+            if (currentNode == null)
+            {
+                throw new InvalidOperationException("Unexpected null node encountered.");
+            }
+
+            currentNode = currentNode.Next[0];
+            currentIndex++;
+        }
+
+        if (currentNode == null)
+        {
+            throw new InvalidOperationException("Unexpected null node encountered.");
+        }
+
+        for (var level = 0; level < currentNode.Next.Length; level++)
+        {
+            var updateNode = this.head;
+            while (updateNode.Next[level] != null && updateNode.Next[level] != currentNode)
+            {
+                updateNode = updateNode.Next[level]!;
+            }
+
+            if (updateNode.Next[level] == currentNode)
+            {
+                updateNode.Next[level] = currentNode.Next[level];
+            }
+        }
+
+        this.Count--;
+        this.version++;
     }
 
     private static bool IsPowerOfTwo(int number)
@@ -299,11 +324,14 @@ public class SkipList<T> : IList<T>
             this.maxLevel++;
         }
 
+        this.version++;
         this.Count++;
     }
 
     private bool AddToEmptyList(T item)
     {
+        ArgumentNullException.ThrowIfNull(item);
+
         if (this.head.Next[0] is not null)
         {
             return false;
@@ -312,6 +340,7 @@ public class SkipList<T> : IList<T>
         this.head.Next[0] = new SkipListNode(item, 0);
         this.maxLevel = 0;
         this.Count++;
+        this.version++;
         return true;
     }
 

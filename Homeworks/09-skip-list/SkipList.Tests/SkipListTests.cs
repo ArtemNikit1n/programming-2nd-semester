@@ -1,5 +1,5 @@
 ﻿// <copyright file="SkipListTests.cs" company="ArtemNikit1n">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+// Copyright (c) ArtemNikit1n. All rights reserved.
 // </copyright>
 
 namespace SkipList.Tests;
@@ -37,7 +37,7 @@ public class SkipListTests
         this.listWithNonReferenceType.Add(1);
         Assert.Multiple(() =>
         {
-            Assert.That(this.listWithNonReferenceType.Remove(1), Is.EqualTo(true));
+            Assert.That(this.listWithNonReferenceType.Remove(1), Is.True);
             Assert.That(this.listWithNonReferenceType, Has.Count.EqualTo(0));
         });
     }
@@ -48,7 +48,7 @@ public class SkipListTests
         this.listWithReferenceType.Add("123");
         Assert.Multiple(() =>
         {
-            Assert.That(this.listWithReferenceType.Remove("123"), Is.EqualTo(true));
+            Assert.That(this.listWithReferenceType.Remove("123"), Is.True);
             Assert.That(this.listWithReferenceType, Has.Count.EqualTo(0));
         });
     }
@@ -66,9 +66,9 @@ public class SkipListTests
         Assert.That(this.listWithReferenceType, Has.Count.EqualTo(7));
         Assert.Multiple(() =>
         {
-            Assert.That(this.listWithReferenceType.Remove("1"), Is.EqualTo(true));
-            Assert.That(this.listWithReferenceType.Remove("22"), Is.EqualTo(true));
-            Assert.That(this.listWithReferenceType.Remove("333"), Is.EqualTo(false));
+            Assert.That(this.listWithReferenceType.Remove("1"), Is.True);
+            Assert.That(this.listWithReferenceType.Remove("22"), Is.True);
+            Assert.That(this.listWithReferenceType.Remove("333"), Is.False);
         });
         Assert.That(this.listWithReferenceType, Has.Count.EqualTo(5));
     }
@@ -145,15 +145,7 @@ public class SkipListTests
 
     [Test]
     public void Insert_ShouldTrowException()
-    {
-        Assert.Throws<NotSupportedException>(() => this.listWithReferenceType.Insert(1, "1"));
-    }
-
-    [Test]
-    public void RemoveAt_ShouldTrowException()
-    {
-        Assert.Throws<NotSupportedException>(() => this.listWithReferenceType.RemoveAt(1));
-    }
+        => Assert.Throws<NotSupportedException>(() => this.listWithReferenceType.Insert(1, "1"));
 
     [Test]
     public void CopyTo_ShouldShouldThrowExceptionForInvalidIndexes()
@@ -221,5 +213,100 @@ public class SkipListTests
         Assert.That(this.listWithNonReferenceType, Does.Not.Contain(143));
         Assert.That(this.listWithNonReferenceType, Has.Count.EqualTo(0));
     }
+
+    [Test]
+    public void RemoveAt_ShouldRemoveItemAtSpecifiedIndex()
+    {
+        this.listWithNonReferenceType.Add(1);
+        this.listWithNonReferenceType.Add(2);
+        this.listWithNonReferenceType.Add(3);
+
+        Assert.That(this.listWithNonReferenceType, Has.Count.EqualTo(3));
+        this.listWithNonReferenceType.RemoveAt(1);
+        Assert.Multiple(() =>
+        {
+            Assert.That(this.listWithNonReferenceType, Has.Count.EqualTo(2));
+            Assert.That(this.listWithNonReferenceType, Does.Contain(1));
+            Assert.That(this.listWithNonReferenceType, Does.Contain(3));
+            Assert.That(this.listWithNonReferenceType, Does.Not.Contain(2));
+        });
+    }
+
+    [Test]
+    public void RemoveAt_ShouldThrowForInvalidIndex()
+    {
+        this.listWithNonReferenceType.Add(1);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => this.listWithNonReferenceType.RemoveAt(-1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => this.listWithNonReferenceType.RemoveAt(1));
+    }
+
+    [Test]
+    public void RemoveAt_ShouldMaintainSkipListStructure()
+    {
+        for (var i = 0; i < 10; i++)
+        {
+            this.listWithNonReferenceType.Add(i);
+        }
+
+        this.listWithNonReferenceType.RemoveAt(5);
+
+        Assert.That(this.listWithNonReferenceType, Has.Count.EqualTo(9));
+        for (var i = 0; i < 5; i++)
+        {
+            Assert.That(this.listWithNonReferenceType, Does.Contain(i));
+        }
+
+        for (var i = 6; i < 10; i++)
+        {
+            Assert.That(this.listWithNonReferenceType, Does.Contain(i));
+        }
+
+        Assert.That(this.listWithNonReferenceType, Does.Not.Contain(5));
+    }
+
+    [Test]
+    public void Enumeration_ShouldThrowWhenCollectionModified()
+    {
+        for (var i = 0; i < 5; i++)
+        {
+            this.listWithNonReferenceType.Add(i);
+        }
+
+        using var enumerator = this.listWithNonReferenceType.GetEnumerator();
+        enumerator.MoveNext();
+
+        this.listWithNonReferenceType.Add(5);
+
+        Assert.Throws<InvalidOperationException>(() => enumerator.MoveNext());
+    }
+
+    [Test]
+    public void Enumeration_ShouldThrowWhenItemRemoved()
+    {
+        this.listWithNonReferenceType.Add(1);
+        this.listWithNonReferenceType.Add(2);
+        this.listWithNonReferenceType.Add(3);
+
+        using var enumerator = this.listWithNonReferenceType.GetEnumerator();
+        enumerator.MoveNext();
+
+        this.listWithNonReferenceType.Remove(2);
+
+        Assert.Throws<InvalidOperationException>(() => enumerator.MoveNext());
+    }
+
+    [Test]
+    public void Enumeration_ShouldThrowWhenListCleared()
+    {
+        this.listWithNonReferenceType.Add(1);
+        this.listWithNonReferenceType.Add(2);
+
+        using var enumerator = this.listWithNonReferenceType.GetEnumerator();
+        enumerator.MoveNext();
+
+        this.listWithNonReferenceType.Clear();
+
+        Assert.Throws<InvalidOperationException>(() => enumerator.MoveNext());
+    }
 }
-#pragma warning restore SA1600
